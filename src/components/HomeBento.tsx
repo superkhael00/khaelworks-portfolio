@@ -52,7 +52,7 @@ const CASES = [
 ]
 
 // Photos of me, fanned. Small copies are fine - the fan shows them under 100px.
-const PHOTOS = [profile.avatarSrc, '/avatar.svg?2', '/avatar.svg?3']
+const PHOTOS = [profile.avatarSrc, '/me-fan-2.jpg', '/me-fan-3.jpg']
 
 /** The systems as a flat list: every leaf of the tree, in order. */
 const leaves = (n: StackNode): StackNode[] =>

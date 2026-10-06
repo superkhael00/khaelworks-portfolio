@@ -48,7 +48,7 @@ export const profile: Profile = {
   firstName: 'Khael',
   handle: '@khaelworks',
   role: 'Workflow & AI Automation',
-  avatarSrc: '/avatar.svg',
+  avatarSrc: '/me-avatar.jpg',
   verifiedLabel: 'ID verified on Upwork',
   email: 'mjmendoza.workph@gmail.com',
   location: 'Muntinlupa City, Philippines',
@@ -61,7 +61,7 @@ export const profile: Profile = {
   displayName: { line1: 'Automate the busywork.', line2: 'Keep control.' },
   hero: {
     body: 'I build n8n and AI workflows that take repetitive invoice, bookkeeping, recruiting and lead work off small teams, with approvals and audit logs built in.',
-    portraitSrc: '/avatar.svg',
+    portraitSrc: '/me-portrait.jpg',
     portraitAlt: 'Khael Mendoza',
   },
   socials: [
