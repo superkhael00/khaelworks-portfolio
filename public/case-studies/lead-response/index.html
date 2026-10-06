@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lead Response Command Center — Automation Schematic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0E2439;
+    --bg-panel:#14304F;
+    --bg-panel-alt:#183759;
+    --line-cyan:#7EC8E3;
+    --line-dim:rgba(163,199,224,0.22);
+    --line-dim-strong:rgba(163,199,224,0.4);
+    --paper:#F2EFE6;
+    --ink:#EAEEF3;
+    --ink-dim:#93A7BD;
+    --ink-faint:#5E7896;
+    --amber:#E2A039;
+    --green:#6FB88B;
+    --red:#D97A6C;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --maxw: 860px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background-color:var(--bg-deep);
+    background-image:
+      linear-gradient(var(--line-dim) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-dim) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:var(--line-cyan);}
+  a:focus-visible, button:focus-visible, summary:focus-visible{
+    outline:2px solid var(--line-cyan);
+    outline-offset:3px;
+  }
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:28px 20px 80px;}
+
+  /* ---------- Title block ---------- */
+  .titleblock{
+    border:1px solid var(--line-dim-strong);
+    background:rgba(20,48,79,0.55);
+    backdrop-filter: blur(2px);
+    padding:22px 24px;
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap:20px;
+    animation: rise 700ms ease-out both;
+  }
+  .titleblock h1{
+    margin:0 0 6px;
+    font-size:clamp(1.5rem, 4vw, 2.05rem);
+    font-weight:700;
+    letter-spacing:-0.01em;
+    line-height:1.15;
+  }
+  .titleblock .kicker{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    color:var(--line-cyan);
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .titleblock p.desc{color:var(--ink-dim); max-width:52ch; margin:0;}
+  .meta{
+    font-family:var(--mono);
+    font-size:0.74rem;
+    color:var(--ink-dim);
+    border-left:1px solid var(--line-dim-strong);
+    padding-left:18px;
+    display:grid;
+    grid-template-columns:auto auto;
+    gap:4px 14px;
+    align-content:start;
+    white-space:nowrap;
+  }
+  .meta dt{color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.06em;}
+  .meta dd{margin:0; color:var(--ink);}
+
+  @media (max-width:640px){
+    .titleblock{grid-template-columns:1fr;}
+    .meta{border-left:none; border-top:1px solid var(--line-dim-strong); padding-left:0; padding-top:14px;}
+  }
+
+  /* ---------- Sections ---------- */
+  section{margin-top:64px; position:relative;}
+  .sheet-no{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+  }
+  h2{
+    font-size:1.4rem;
+    font-weight:700;
+    margin:0 0 18px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line-dim-strong);
+    letter-spacing:-0.01em;
+  }
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 8px;}
+  p{color:var(--ink); max-width:68ch;}
+  .lede{color:var(--ink-dim);}
+
+  /* ---------- Overview split ---------- */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+  @media (max-width:640px){.split{grid-template-columns:1fr;}}
+  .panel{
+    border:1px solid var(--line-dim-strong);
+    padding:18px 20px;
+    background:rgba(14,36,57,0.4);
+  }
+  .panel .tag{
+    font-family:var(--mono); font-size:0.68rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--ink-faint); margin-bottom:10px; display:block;
+  }
+
+  /* ---------- Diagram ---------- */
+  .diagram-frame{
+    border:1px solid var(--line-dim-strong);
+    background:rgba(9,26,43,0.5);
+    padding:20px 10px;
+    overflow-x:auto;
+  }
+  .diagram-frame svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+  .diagram-caption{
+    font-family:var(--mono); font-size:0.72rem; color:var(--ink-faint);
+    margin-top:10px; text-align:center;
+  }
+  .flow-box{fill:var(--bg-panel-alt); stroke:var(--line-cyan); stroke-width:1.3;}
+  .flow-box.alt{fill:rgba(226,160,57,0.12); stroke:var(--amber);}
+  .flow-box.stop{fill:rgba(217,122,108,0.12); stroke:var(--red);}
+  .flow-diamond{fill:var(--bg-panel-alt); stroke:var(--ink-dim); stroke-width:1.2;}
+  .flow-line{stroke:var(--line-dim-strong); stroke-width:1.3; fill:none;}
+  .flow-text{fill:var(--ink); font-family:var(--mono); font-size:12px;}
+  .flow-text.dim{fill:var(--ink-dim); font-size:10.5px;}
+  .flow-text.tiny{fill:var(--ink-faint); font-size:9.5px;}
+
+  /* ---------- Stack list ---------- */
+  .stacklist{list-style:none; margin:0; padding:0; border-top:1px solid var(--line-dim);}
+  .stacklist li{
+    display:grid; grid-template-columns: 160px 1fr;
+    gap:16px; padding:12px 0; border-bottom:1px solid var(--line-dim);
+    align-items:baseline;
+  }
+  @media (max-width:560px){.stacklist li{grid-template-columns:1fr;}}
+  .stacklist .part{font-family:var(--mono); font-size:0.85rem; color:var(--line-cyan);}
+  .stacklist .role{color:var(--ink-dim); font-size:0.92rem;}
+
+  /* ---------- Principle cards ---------- */
+  .principles{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line-dim-strong); border:1px solid var(--line-dim-strong);}
+  @media (max-width:720px){.principles{grid-template-columns:1fr;}}
+  .principle{background:var(--bg-deep); padding:20px;}
+  .principle .num{font-family:var(--mono); font-size:0.72rem; color:var(--ink-faint); display:block; margin-bottom:10px;}
+  .principle p{color:var(--ink-dim); font-size:0.92rem; margin:0;}
+
+  /* ---------- FAQ ---------- */
+  details{border-bottom:1px solid var(--line-dim); padding:14px 0;}
+  summary{
+    cursor:pointer; font-weight:600; list-style:none;
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::after{
+    content:"+"; font-family:var(--mono); color:var(--line-cyan); font-size:1.1rem; flex-shrink:0;
+    transition: transform 200ms ease;
+  }
+  details[open] summary::after{transform:rotate(45deg);}
+  details p{margin:12px 0 0; color:var(--ink-dim); font-size:0.94rem;}
+
+  /* ---------- Case study before/after ---------- */
+  .beforeafter{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line-dim-strong); border:1px solid var(--line-dim-strong);}
+  @media (max-width:640px){.beforeafter{grid-template-columns:1fr;}}
+  .ba-col{background:var(--bg-deep); padding:20px;}
+  .ba-col.after{background:rgba(111,184,139,0.06);}
+  .ba-label{font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:12px; display:block;}
+  .ba-col.before .ba-label{color:var(--red);}
+  .ba-col.after .ba-label{color:var(--green);}
+  .ba-col ul{margin:0; padding-left:18px; color:var(--ink-dim); font-size:0.92rem;}
+  .ba-col li{margin-bottom:8px;}
+
+  /* ---------- Timeline compare ---------- */
+  .timerow{display:grid; grid-template-columns:110px 1fr; gap:14px; align-items:center; margin-bottom:14px;}
+  .timerow .tlabel{font-family:var(--mono); font-size:0.75rem; color:var(--ink-dim);}
+  .tbar-track{height:22px; background:rgba(255,255,255,0.04); border:1px solid var(--line-dim); position:relative;}
+  .tbar-fill{height:100%; background:linear-gradient(90deg, var(--red), var(--amber)); width:100%;}
+  .tbar-fill.fast{background:var(--green); width:2%;}
+  .tbar-note{font-family:var(--mono); font-size:0.68rem; color:var(--ink-faint); margin-top:4px;}
+
+  /* ---------- Edge case table ---------- */
+  table{width:100%; border-collapse:collapse; font-size:0.9rem;}
+  th{
+    font-family:var(--mono); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--ink-faint); text-align:left; padding:0 0 10px; border-bottom:1px solid var(--line-dim-strong);
+  }
+  td{padding:14px 14px 14px 0; border-bottom:1px solid var(--line-dim); color:var(--ink-dim); vertical-align:top;}
+  td:first-child{color:var(--ink); font-weight:500; width:34%;}
+
+  /* ---------- Roadmap ---------- */
+  .roadmap{list-style:none; margin:0; padding:0;}
+  .roadmap li{
+    display:flex; gap:14px; padding:12px 0; border-bottom:1px solid var(--line-dim);
+  }
+  .roadmap .chk{
+    flex-shrink:0; width:16px; height:16px; margin-top:3px;
+    border:1.3px solid var(--ink-faint);
+  }
+  .roadmap .rtext strong{display:block; margin-bottom:2px;}
+  .roadmap .rtext span{color:var(--ink-dim); font-size:0.9rem;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top:80px; padding-top:24px; border-top:1px solid var(--line-dim-strong);
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px;
+    font-family:var(--mono); font-size:0.76rem; color:var(--ink-faint);
+  }
+  .footer-tags{display:flex; flex-wrap:wrap; gap:8px;}
+  .footer-tags span{
+    border:1px solid var(--line-dim-strong); padding:4px 9px; color:var(--ink-dim);
+  }
+
+  @keyframes rise{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .titleblock{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="titleblock">
+    <div>
+      <div class="kicker">Automation Schematic · Make.com Build</div>
+      <h1>Lead Response Command Center</h1>
+      <p class="desc">A two-scenario system that turns a form submission into a tracked, prioritized, team-visible pipeline — with zero manual data entry.</p>
+    </div>
+    <dl class="meta">
+      <dt>Built by</dt><dd>Khael Mendoza</dd>
+      <dt>Stack</dt><dd>Make.com</dd>
+      <dt>Scenarios</dt><dd>2</dd>
+      <dt>Status</dt><dd>Tested, live data</dd>
+      <dt>Sheet</dt><dd>01 / 01</dd>
+    </dl>
+  </header>
+
+  <!-- 01 OVERVIEW -->
+  <section id="overview">
+    <div class="sheet-no">01</div>
+    <h2>The problem, and what this solves</h2>
+    <div class="split">
+      <div class="panel">
+        <span class="tag">Problem</span>
+        <p>Small businesses lose deals not because the offer is weak, but because follow-up is slow. A lead fills out a form, and nothing happens for hours or days — by the time someone replies, the prospect has already talked to a competitor.</p>
+      </div>
+      <div class="panel">
+        <span class="tag">Solution</span>
+        <p>The moment a lead arrives, it's checked for duplicates, acknowledged by email, logged to Trello with a priority label and a 6-item follow-up checklist, and — if it's high priority — flagged to the sales team on Slack instantly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 SCENARIO 1 -->
+  <section id="scenario-1">
+    <div class="sheet-no">02</div>
+    <h2>Scenario 1 — Lead capture &amp; routing</h2>
+    <p class="lede">Runs the instant a new row lands in the intake sheet.</p>
+    <div class="diagram-frame">
+      <svg viewBox="0 0 620 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flowchart of lead capture and routing scenario">
+        <defs>
+          <marker id="arrow1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#93A7BD"></path>
+          </marker>
+        </defs>
+
+        <!-- trunk -->
+        <rect class="flow-box" x="140" y="16" width="220" height="46"></rect>
+        <text class="flow-text" x="250" y="44" text-anchor="middle">New lead form submission</text>
+
+        <line class="flow-line" x1="250" y1="62" x2="250" y2="100" marker-end="url(#arrow1)"></line>
+
+        <!-- decision: duplicate -->
+        <polygon class="flow-diamond" points="250,98 320,140 250,182 180,140"></polygon>
+        <text class="flow-text" x="250" y="136" text-anchor="middle">Duplicate</text>
+        <text class="flow-text" x="250" y="150" text-anchor="middle">check?</text>
+
+        <!-- branch: duplicate -> stop -->
+        <line class="flow-line" x1="320" y1="140" x2="420" y2="140" marker-end="url(#arrow1)"></line>
+        <text class="flow-text tiny" x="360" y="130" text-anchor="middle">yes</text>
+        <rect class="flow-box stop" x="420" y="117" width="170" height="46"></rect>
+        <text class="flow-text" x="505" y="140" text-anchor="middle">Flag row,</text>
+        <text class="flow-text" x="505" y="153" text-anchor="middle">stop here</text>
+
+        <!-- branch: new -> continue -->
+        <line class="flow-line" x1="250" y1="182" x2="250" y2="220" marker-end="url(#arrow1)"></line>
+        <text class="flow-text tiny" x="264" y="205">no</text>
+
+        <rect class="flow-box" x="140" y="220" width="220" height="46"></rect>
+        <text class="flow-text" x="250" y="248" text-anchor="middle">Send Gmail acknowledgement</text>
+
+        <line class="flow-line" x1="250" y1="266" x2="250" y2="304" marker-end="url(#arrow1)"></line>
+
+        <rect class="flow-box" x="140" y="304" width="220" height="46"></rect>
+        <text class="flow-text" x="250" y="326" text-anchor="middle">Create Trello card +</text>
+        <text class="flow-text" x="250" y="341" text-anchor="middle">priority label</text>
+
+        <line class="flow-line" x1="250" y1="350" x2="250" y2="388" marker-end="url(#arrow1)"></line>
+
+        <rect class="flow-box" x="140" y="388" width="220" height="46"></rect>
+        <text class="flow-text" x="250" y="410" text-anchor="middle">Auto-create 6-item</text>
+        <text class="flow-text" x="250" y="424" text-anchor="middle">follow-up checklist</text>
+
+        <line class="flow-line" x1="250" y1="434" x2="250" y2="472" marker-end="url(#arrow1)"></line>
+
+        <!-- decision: priority -->
+        <polygon class="flow-diamond" points="250,470 320,512 250,554 180,512"></polygon>
+        <text class="flow-text" x="250" y="508" text-anchor="middle">Priority</text>
+        <text class="flow-text" x="250" y="522" text-anchor="middle">router</text>
+
+        <!-- high branch -->
+        <line class="flow-line" x1="320" y1="512" x2="420" y2="512" marker-end="url(#arrow1)"></line>
+        <text class="flow-text tiny" x="365" y="502" text-anchor="middle">high</text>
+        <rect class="flow-box alt" x="420" y="489" width="170" height="46"></rect>
+        <text class="flow-text" x="505" y="512" text-anchor="middle">Slack alert to</text>
+        <text class="flow-text" x="505" y="525" text-anchor="middle">sales team</text>
+
+        <!-- med/low branch -->
+        <line class="flow-line" x1="250" y1="554" x2="250" y2="592" marker-end="url(#arrow1)"></line>
+        <text class="flow-text tiny" x="278" y="577">medium / low</text>
+
+        <rect class="flow-box" x="140" y="592" width="220" height="46"></rect>
+        <text class="flow-text" x="250" y="620" text-anchor="middle">Log lead to Google Sheets</text>
+
+        <!-- high branch rejoins log -->
+        <line class="flow-line" x1="505" y1="535" x2="505" y2="615" ></line>
+        <line class="flow-line" x1="505" y1="615" x2="360" y2="615" marker-end="url(#arrow1)"></line>
+
+        <line class="flow-line" x1="250" y1="638" x2="250" y2="676" marker-end="url(#arrow1)"></line>
+
+        <rect class="flow-box" x="140" y="676" width="220" height="46"></rect>
+        <text class="flow-text" x="250" y="704" text-anchor="middle">Lead live in the pipeline</text>
+      </svg>
+      <div class="diagram-caption">Fig. 1 — every path ends the same way: a logged, visible lead. Only the noise around it changes.</div>
+    </div>
+  </section>
+
+  <!-- 03 SCENARIO 2 -->
+  <section id="scenario-2">
+    <div class="sheet-no">03</div>
+    <h2>Scenario 2 — Lead lifecycle sync</h2>
+    <p class="lede">Keeps the spreadsheet honest as the salesperson works entirely inside Trello.</p>
+    <div class="diagram-frame">
+      <svg viewBox="0 0 480 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flowchart of lead lifecycle synchronization scenario">
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#93A7BD"></path>
+          </marker>
+        </defs>
+
+        <rect class="flow-box" x="130" y="16" width="220" height="46"></rect>
+        <text class="flow-text" x="240" y="38" text-anchor="middle">Card moved to a new</text>
+        <text class="flow-text" x="240" y="52" text-anchor="middle">pipeline stage</text>
+
+        <line class="flow-line" x1="240" y1="62" x2="240" y2="100" marker-end="url(#arrow2)"></line>
+
+        <rect class="flow-box" x="130" y="100" width="220" height="46"></rect>
+        <text class="flow-text" x="240" y="128" text-anchor="middle">Board-wide activity watcher</text>
+
+        <line class="flow-line" x1="240" y1="146" x2="240" y2="184" marker-end="url(#arrow2)"></line>
+
+        <polygon class="flow-diamond" points="240,182 320,224 240,266 160,224"></polygon>
+        <text class="flow-text" x="240" y="220" text-anchor="middle">Genuine list</text>
+        <text class="flow-text" x="240" y="234" text-anchor="middle">change?</text>
+
+        <line class="flow-line" x1="320" y1="224" x2="410" y2="224" marker-end="url(#arrow2)"></line>
+        <text class="flow-text tiny" x="365" y="214" text-anchor="middle">no</text>
+        <rect class="flow-box stop" x="330" y="248" width="120" height="40"></rect>
+        <text class="flow-text" x="390" y="272" text-anchor="middle">Ignored</text>
+        <line class="flow-line" x1="410" y1="224" x2="410" y2="248"></line>
+
+        <line class="flow-line" x1="240" y1="266" x2="240" y2="304" marker-end="url(#arrow2)"></line>
+        <text class="flow-text tiny" x="256" y="289">yes</text>
+
+        <rect class="flow-box" x="130" y="304" width="220" height="46"></rect>
+        <text class="flow-text" x="240" y="332" text-anchor="middle">Fetch full card details</text>
+
+        <line class="flow-line" x1="240" y1="350" x2="240" y2="388" marker-end="url(#arrow2)"></line>
+
+        <rect class="flow-box" x="130" y="388" width="220" height="46"></rect>
+        <text class="flow-text" x="240" y="410" text-anchor="middle">Extract Lead ID from</text>
+        <text class="flow-text" x="240" y="424" text-anchor="middle">card description</text>
+
+        <line class="flow-line" x1="240" y1="434" x2="240" y2="472" marker-end="url(#arrow2)"></line>
+
+        <rect class="flow-box" x="130" y="472" width="220" height="46"></rect>
+        <text class="flow-text" x="240" y="500" text-anchor="middle">Match row in Google Sheets</text>
+
+        <line class="flow-line" x1="240" y1="518" x2="240" y2="556" marker-end="url(#arrow2)"></line>
+
+        <rect class="flow-box" x="130" y="556" width="220" height="46"></rect>
+        <text class="flow-text" x="240" y="578" text-anchor="middle">Update row's status to</text>
+        <text class="flow-text" x="240" y="592" text-anchor="middle">match the pipeline stage</text>
+      </svg>
+      <div class="diagram-caption">Fig. 2 — one trigger watches the whole board, so adding a pipeline stage later needs no new automation.</div>
+    </div>
+  </section>
+
+  <!-- 04 STACK -->
+  <section id="stack">
+    <div class="sheet-no">04</div>
+    <h2>Components</h2>
+    <ul class="stacklist">
+      <li><span class="part">Make.com</span><span class="role">Automation engine connecting every tool below</span></li>
+      <li><span class="part">Google Sheets</span><span class="role">Central lead database and single source of truth</span></li>
+      <li><span class="part">Trello</span><span class="role">Visual sales pipeline, used as a lightweight CRM</span></li>
+      <li><span class="part">Gmail</span><span class="role">Automated lead acknowledgement</span></li>
+      <li><span class="part">Slack</span><span class="role">Real-time alerts for high-priority leads</span></li>
+    </ul>
+  </section>
+
+  <!-- 05 PRINCIPLES -->
+  <section id="principles">
+    <div class="sheet-no">05</div>
+    <h2>Design principles</h2>
+    <div class="principles">
+      <div class="principle">
+        <span class="num">A</span>
+        <h3>Automate the repetitive, not the judgment</h3>
+        <p>Data entry, notifications, and status tracking are automated. Deciding who owns a lead, and doing the actual selling, stays human.</p>
+      </div>
+      <div class="principle">
+        <span class="num">B</span>
+        <h3>Fail safely</h3>
+        <p>Duplicate detection requires a meaningful combination of matching fields, not one, so a legitimate new lead is never blocked by accident.</p>
+      </div>
+      <div class="principle">
+        <span class="num">C</span>
+        <h3>Build for real usage</h3>
+        <p>The lifecycle sync watches the whole board with one trigger, instead of needing a separate automation per pipeline stage.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 CASE STUDY -->
+  <section id="case-study">
+    <div class="sheet-no">06</div>
+    <h2>Case study — BrightPath Sales Operations <span style="color:var(--ink-faint); font-weight:400; font-size:0.85rem;">(simulated client)</span></h2>
+    <p class="lede">A small web, SEO, and paid-ads shop previously ran inbound leads through a form, a manual inbox check, and a spreadsheet someone remembered to update.</p>
+    <div class="beforeafter">
+      <div class="ba-col before">
+        <span class="ba-label">Before</span>
+        <ul>
+          <li>Leads sat unacknowledged for hours or days</li>
+          <li>No consistent way to flag urgent inquiries</li>
+          <li>Follow-up tasks lived in memory, not a system</li>
+          <li>The spreadsheet was often out of date</li>
+        </ul>
+      </div>
+      <div class="ba-col after">
+        <span class="ba-label">After</span>
+        <ul>
+          <li>Every lead is acknowledged within seconds</li>
+          <li>High-priority leads alert the team on Slack instantly</li>
+          <li>Every lead gets a 6-step follow-up checklist automatically</li>
+          <li>The sheet updates itself as deals move — always accurate</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 TIMELINE -->
+  <section id="timeline">
+    <div class="sheet-no">07</div>
+    <h2>Response time — before and after</h2>
+    <div class="timerow">
+      <div class="tlabel">Manual</div>
+      <div>
+        <div class="tbar-track"><div class="tbar-fill"></div></div>
+        <div class="tbar-note">first real follow-up: 5–7 days after submission</div>
+      </div>
+    </div>
+    <div class="timerow">
+      <div class="tlabel">Automated</div>
+      <div>
+        <div class="tbar-track"><div class="tbar-fill fast"></div></div>
+        <div class="tbar-note">acknowledgement + Trello card + checklist: under 30 seconds</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 EDGE CASES -->
+  <section id="edge-cases">
+    <div class="sheet-no">08</div>
+    <h2>Documented scope</h2>
+    <p class="lede">Known boundaries of this build, stated up front.</p>
+    <table>
+      <thead>
+        <tr><th>Case</th><th>Behavior</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Card deleted after a move</td><td>The lifecycle sync's card lookup fails on that run. Not auto-recovered.</td></tr>
+        <tr><td>Pipeline list renamed</td><td>Matching is by exact list name, so a renamed stage falls through to an "Unknown" status instead of guessing.</td></tr>
+        <tr><td>Card moved backward</td><td>Fully supported — the sheet always reflects the card's current list, not a one-way progression.</td></tr>
+        <tr><td>Lead ownership</td><td>Left manual on purpose. This is a management decision, not a data-processing task.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 09 FAQ -->
+  <section id="faq">
+    <div class="sheet-no">09</div>
+    <h2>Frequently asked</h2>
+    <details open>
+      <summary>Does this replace a CRM?</summary>
+      <p>Not fully — it turns Trello and Google Sheets into a lightweight, CRM-style system. For a business not ready to pay for or learn a full CRM, this covers most of the benefit at a fraction of the cost.</p>
+    </details>
+    <details>
+      <summary>What if two leads submit the same info?</summary>
+      <p>The system checks for a matching combination of contact details before creating a new entry, and flags likely duplicates instead of doubling up the Trello card and the alert.</p>
+    </details>
+    <details>
+      <summary>Can this connect to tools other than Trello, Sheets, Gmail, and Slack?</summary>
+      <p>Yes. Make.com connects to well over a thousand apps, so this same capture → route → notify → sync pattern can be rebuilt around whatever a business already uses — HubSpot, Notion, Monday.com, Microsoft Teams.</p>
+    </details>
+    <details>
+      <summary>How long does setup take for a new client?</summary>
+      <p>Once the core logic is proven, as it is here, adapting it to a new business's tools and pipeline stages typically takes a few days — most of the time goes into understanding their workflow, not rebuilding the automation.</p>
+    </details>
+    <details>
+      <summary>What happens if Trello or Sheets goes down?</summary>
+      <p>Make.com queues or retries the failed step depending on the error type. No data is silently lost, though a very prolonged outage would need a manual review.</p>
+    </details>
+  </section>
+
+  <!-- 10 ROADMAP -->
+  <section id="roadmap">
+    <div class="sheet-no">10</div>
+    <h2>Future improvements</h2>
+    <ul class="roadmap">
+      <li><span class="chk"></span><div class="rtext"><strong>Multi-agent lead assignment</strong><span>Round-robin or rule-based assignment by service type or territory, once there's more than one salesperson.</span></div></li>
+      <li><span class="chk"></span><div class="rtext"><strong>SLA monitoring</strong><span>A time-based check that escalates a lead with an extra Slack alert if it sits untouched too long.</span></div></li>
+      <li><span class="chk"></span><div class="rtext"><strong>Two-way sync</strong><span>Let updates made directly in Google Sheets reflect back into Trello.</span></div></li>
+      <li><span class="chk"></span><div class="rtext"><strong>Analytics dashboard</strong><span>Aggregate lead volume, source, priority mix, and conversion by stage.</span></div></li>
+      <li><span class="chk"></span><div class="rtext"><strong>CRM-lite owner reporting</strong><span>A weekly auto-generated summary of new, in-progress, and closed leads.</span></div></li>
+      <li><span class="chk"></span><div class="rtext"><strong>Client-specific template layer</strong><span>Turn the core architecture into a repeatable template for faster client setup.</span></div></li>
+    </ul>
+  </section>
+
+  <footer>
+    <div>Built and tested end-to-end by Khael Mendoza.</div>
+    <div class="footer-tags">
+      <span>Make.com</span><span>Google Sheets</span><span>Trello</span><span>Gmail</span><span>Slack</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

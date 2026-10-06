@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice &amp; Expense Processing Automation</title>
+<meta name="description" content="Case study: an n8n workflow that reads vendor invoices with AI, checks every number in code, routes anything over $500 for approval, files the PDF and logs every outcome.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#f3f5f8; --surface:#ffffff; --ink:#15202e; --muted:#5a6676; --line:#d7dde5;
+  --accent:#1f4e79; --accent-soft:#e3ecf5; --on-accent:#ffffff;
+  --good:#2c7a4b; --good-soft:#e2f1e8; --warn:#a86a06; --warn-soft:#fbf1dc; --bad:#b0362b; --bad-soft:#f8e3e0;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f141b; --surface:#161d27; --ink:#e3e9f1; --muted:#9aa6b5; --line:#283241;
+  --accent:#7fb0e0; --accent-soft:#18283a; --on-accent:#0f141b;
+  --good:#6cc690; --good-soft:#15291e; --warn:#e7b04d; --warn-soft:#2c2414; --bad:#f08478; --bad-soft:#2f1a18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f141b; --surface:#161d27; --ink:#e3e9f1; --muted:#9aa6b5; --line:#283241;
+  --accent:#7fb0e0; --accent-soft:#18283a; --on-accent:#0f141b;
+  --good:#6cc690; --good-soft:#15291e; --warn:#e7b04d; --warn-soft:#2c2414; --bad:#f08478; --bad-soft:#2f1a18; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--f-body);padding:0 16px 64px}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.4rem,3vw,1.7rem);font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.08rem;font-weight:700}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:600 .74rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+code,.mono{font-family:var(--f-mono);font-size:.85em}
+section{display:grid;gap:18px;padding-block:44px;border-top:1px solid var(--line)}
+header{display:grid;gap:18px;padding-block:48px 36px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:600 .76rem/1 var(--f-mono);padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent)}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;font:600 .95rem/1 var(--f-body);text-decoration:none;border-radius:6px;padding:12px 16px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:2px}
+.stat b{font:700 1.6rem/1.1 var(--f-display);color:var(--accent)}
+.stat span{font-size:.88rem;color:var(--muted)}
+
+/* replay */
+.replay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:20px;align-items:start}
+@media (max-width:860px){.replay{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:14px;min-width:0}
+.pick{display:grid;gap:6px}
+.pick button{all:unset;cursor:pointer;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:.92rem}
+.pick button:hover{border-color:var(--accent)}
+.pick button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.pick button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pick .no{font:600 .78rem var(--f-mono);color:var(--muted)}
+.pick .amt{font:.8rem var(--f-mono);color:var(--muted);white-space:nowrap}
+.pick .why{display:block;font-size:.78rem;color:var(--muted)}
+.stages{display:grid;gap:6px}
+.stg{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;padding:8px 10px;border-radius:8px;border:1px solid var(--line);color:var(--muted);background:var(--paper);transition:background .25s,border-color .25s,color .25s}
+.stg .dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font:700 .7rem var(--f-mono)}
+.stg b{display:block;font-weight:600;color:inherit}
+.stg span{font-size:.86rem}
+.stg.ok{color:var(--ink);border-color:var(--line);background:var(--surface)}
+.stg.ok .dot{background:var(--good);border-color:var(--good);color:var(--surface)}
+.stg.stop{color:var(--ink);border-color:var(--warn);background:var(--warn-soft)}
+.stg.stop .dot{background:var(--warn);border-color:var(--warn);color:var(--surface)}
+.stg.skip{opacity:.45}
+.stg.now{border-color:var(--accent)}
+.mail{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px;background:var(--paper)}
+.mail .subj{font-weight:600}
+.mail dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 14px;margin:0;font-size:.88rem}
+.mail dt{color:var(--muted)} .mail dd{margin:0}
+.mail .acts{display:flex;gap:8px}
+.mail .acts button{font:600 .9rem var(--f-body);cursor:pointer;border-radius:6px;padding:9px 16px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.mail .acts button.yes{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.mail .acts button:disabled{opacity:.5;cursor:default}
+.row{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row h3{font:600 .72rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px;background:var(--paper);border-bottom:1px solid var(--line)}
+.row dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:0;padding:12px;font-size:.9rem}
+.row dt{color:var(--muted);font-family:var(--f-mono);font-size:.78rem;padding-top:2px}
+.row dd{margin:0;overflow-wrap:anywhere}
+.tag{font:600 .72rem/1 var(--f-mono);padding:4px 7px;border-radius:4px;white-space:nowrap;display:inline-block}
+.tag.good{background:var(--good-soft);color:var(--good)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.tag.info{background:var(--accent-soft);color:var(--accent)}
+.placeholder{color:var(--muted);font-size:.92rem;text-align:center;padding:24px 8px}
+@media (prefers-reduced-motion:reduce){.stg{transition:none}}
+
+/* content */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px}
+.cell{display:grid;gap:8px;align-content:start;min-width:0}
+ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .72rem/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--f-mono);font-size:.85em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.diagram{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.diagram svg{display:block;min-width:600px;width:100%;height:auto}
+figure{margin:0;display:grid;gap:8px;min-width:0}
+figure img{border:1px solid var(--line);border-radius:8px;display:block;width:100%;height:auto;background:var(--surface)}
+figcaption{font-size:.86rem;color:var(--muted)}
+.shots{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.shots .wide{grid-column:1/-1}
+@media (max-width:700px){.shots{grid-template-columns:minmax(0,1fr)}}
+details{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 16px}
+details+details{margin-top:8px}
+summary{cursor:pointer;padding:14px 0;font-weight:600;list-style-position:outside}
+summary::marker{color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+details>div{padding-bottom:14px;display:grid;gap:10px}
+.faq-group{display:grid;gap:0}
+.v2{border:1px dashed var(--line);border-radius:10px;padding:18px 20px;display:grid;gap:10px}
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:6px;text-decoration:none;color:var(--ink)}
+.doc:hover{border-color:var(--accent)}
+.doc b{font-family:var(--f-display)}
+.doc span{font-size:.88rem;color:var(--muted)}
+footer{padding-top:32px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Case study · Accounts payable automation · n8n</span>
+  <h1>Invoice &amp; Expense Processing Automation</h1>
+  <p style="font-size:1.15rem">A small business receives vendor invoices by email and keys them in by hand. This n8n system reads each invoice with AI, checks every number in code, blocks duplicates, asks the owner to approve anything over $500, files the PDF and records every outcome in a Google Sheets register, usually within 7 to 16 seconds.</p>
+  <div class="chips">
+    <span class="chip on">V1 · built and tested · 1 Oct 2026</span>
+    <span class="chip">n8n (self-hosted)</span><span class="chip">OpenRouter · gpt-4.1-mini</span><span class="chip">Gmail</span><span class="chip">Google Sheets</span><span class="chip">Google Drive</span>
+  </div>
+  <div class="btns">
+    <a class="btn" href="https://github.com/superkhael00/invoice-expense-automation/blob/main/docs/System-Documentation-Invoice-Processing.pdf">System documentation (PDF)</a>
+    <a class="btn ghost" href="https://github.com/superkhael00/invoice-expense-automation/blob/main/docs/Owner-SOP-Invoice-Processing.pdf">Owner SOP (PDF)</a>
+  </div>
+  <p class="muted small">Demo business: Brightside Creative Studio (fictional). All vendors, invoices and amounts are test data. Built by Khael Mendoza.</p>
+</header>
+
+<div class="stats" aria-label="Key results">
+  <div class="stat"><b>10 / 10</b><span>test invoices handled as expected on the final live run</span></div>
+  <div class="stat"><b>7–16 s</b><span>per invoice, receipt to Register (measured, excluding approval wait)</span></div>
+  <div class="stat"><b>~$0.0004</b><span>AI cost per invoice (estimate)</span></div>
+  <div class="stat"><b>~12 h</b><span>staff time saved per month at 100 invoices (estimate)</span></div>
+</div>
+
+<section id="replay" aria-labelledby="replay-h">
+  <span class="eyebrow">Replay the test run</span>
+  <h2 id="replay-h">Pick an invoice and follow it through</h2>
+  <p class="muted">Each of the 10 test invoices was built to exercise one path. Choose one to see which checks it passed, where it stopped, and the Register row it produced. Results are from the final live run on 1 Oct 2026.</p>
+  <div class="replay">
+    <div class="panel">
+      <div class="pick" id="pick" role="group" aria-label="Test invoices"></div>
+    </div>
+    <div class="panel" aria-live="polite">
+      <div class="stages" id="stages"></div>
+      <div id="mailSlot"></div>
+      <div class="row" id="rowCard"><h3>Invoice Register row</h3><p class="placeholder" id="rowEmpty">Choose an invoice on the left.</p><dl id="rowDl" hidden></dl></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="prob-h">
+  <span class="eyebrow">The problem</span>
+  <h2 id="prob-h">Most of the delay is waiting, and most of the risk is trust</h2>
+  <div class="two">
+    <div class="cell"><h3>Before</h3><ul>
+      <li>Invoices sit in the inbox until the weekly catch-up</li>
+      <li>8 to 10 fields typed by hand per invoice</li>
+      <li>Nobody re-adds the vendor's math</li>
+      <li>Resent "reminder" invoices risk being paid twice</li>
+      <li>Approvals happen in chat, with no record of who said yes</li>
+      <li>PDFs scattered across inboxes</li></ul></div>
+    <div class="cell"><h3>After (V1)</h3><ul>
+      <li>Invoices are picked up within a minute, by email or form</li>
+      <li>AI extracts the fields; code checks every one</li>
+      <li>Duplicates are blocked against the Register</li>
+      <li>Over $500, the owner approves or rejects with one click</li>
+      <li>Every outcome is logged with approver, time and reason</li>
+      <li>Every PDF is renamed and filed, linked from its row</li></ul></div>
+  </div>
+  <p class="muted">Illustrative cycle (weekly-batch business): from up to about 7 days between arrival and an approved, recorded invoice, to the same day. Invoices of $500 or less are done in seconds.</p>
+</section>
+
+<section aria-labelledby="arch-h">
+  <span class="eyebrow">How it works</span>
+  <h2 id="arch-h">AI reads, code checks, humans approve</h2>
+  <div class="diagram">
+  <svg viewBox="0 0 760 630" role="img" aria-label="Pipeline: intake, read PDF, AI extraction, code validation, duplicate check, approval over $500, then file and log. Failures go to Needs Review.">
+    <defs><marker id="pa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+    <g fill="none" stroke="var(--muted)" stroke-width="1.25">
+      <path d="M210 92V116" marker-end="url(#pa)"/><path d="M210 172V196" marker-end="url(#pa)"/><path d="M210 252V276" marker-end="url(#pa)"/>
+      <path d="M210 332V356" marker-end="url(#pa)"/><path d="M210 412V440" marker-end="url(#pa)"/><path d="M210 504V546" marker-end="url(#pa)"/>
+      <path d="M360 144H470" marker-end="url(#pa)"/><path d="M360 304H470" marker-end="url(#pa)"/><path d="M360 384H470" marker-end="url(#pa)"/>
+      <path d="M280 472H470" marker-end="url(#pa)"/><path d="M575 500V546" marker-end="url(#pa)"/><path d="M705 412V546" marker-end="url(#pa)"/>
+    </g>
+    <g stroke="var(--line)" stroke-width="1.25" fill="var(--surface)">
+      <rect x="60" y="36" width="300" height="56" rx="8"/><rect x="60" y="116" width="300" height="56" rx="8"/>
+      <rect x="60" y="196" width="300" height="56" rx="8"/><rect x="60" y="276" width="300" height="56" rx="8"/>
+      <rect x="60" y="356" width="300" height="56" rx="8"/><polygon points="140,472 210,440 280,472 210,504"/>
+      <rect x="470" y="444" width="210" height="56" rx="8"/>
+    </g>
+    <rect x="470" y="116" width="250" height="296" rx="8" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1.5"/>
+    <rect x="60" y="546" width="660" height="56" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+    <g text-anchor="middle" fill="var(--ink)" font-family="Source Sans 3, sans-serif" font-size="13">
+      <g font-weight="700">
+        <text x="210" y="60">Intake</text><text x="210" y="140">Read PDF text</text><text x="210" y="220">AI extracts fields</text>
+        <text x="210" y="300">Code validation</text><text x="210" y="380">Duplicate check</text>
+        <text x="595" y="250">Needs Review</text><text x="575" y="468">Owner approves or rejects</text>
+        <text x="390" y="570" font-size="15">File PDF to Drive, log to the Register</text>
+      </g>
+      <text x="210" y="476">Over $500?</text>
+      <g font-size="11.5" fill="var(--muted)">
+        <text x="210" y="78">Gmail (invoice + PDF) or web form</text><text x="210" y="158">Extract from File</text>
+        <text x="210" y="238">gpt-4.1-mini, null if not printed</text><text x="210" y="318">fields, math, dates, AI vs PDF text</text>
+        <text x="210" y="398">vendor + invoice # against the Register</text>
+        <text x="595" y="270">reason written to the Register</text><text x="595" y="286">a person fixes and resubmits</text>
+        <text x="575" y="486">Gmail buttons, 3-day timeout</text>
+        <text x="390" y="588">Processed or Needs Review folder; one row per invoice, every outcome</text>
+        <text x="415" y="136">no text</text><text x="415" y="296">fails a check</text><text x="415" y="376">duplicate</text>
+        <text x="375" y="464">yes</text><text x="226" y="530" text-anchor="start">no</text>
+        <text x="565" y="530" text-anchor="end">decision + who + when</text>
+      </g>
+    </g>
+  </svg>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Check</th><th>Rule</th><th>Caught in testing</th></tr></thead>
+    <tbody>
+      <tr><td>Readable PDF</td><td>Under 30 characters of text → manual review, AI skipped</td><td>#10 scanned image</td></tr>
+      <tr><td>AI output</td><td>Temperature 0, JSON only, null when not printed, fixed category list</td><td>#6 null, not an invented number</td></tr>
+      <tr><td>Required fields</td><td>Vendor, invoice #, invoice date, total</td><td>#6 missing invoice number</td></tr>
+      <tr><td>Math</td><td>Subtotal + tax = total, within $0.01</td><td>#5 total $20.00 too high</td></tr>
+      <tr><td>Dates</td><td>Valid; not future; not over a year old; due ≥ invoice date</td><td>#8 dated 2027-01-15</td></tr>
+      <tr><td>Hallucination guard</td><td>AI's invoice # and total must appear in the PDF text</td><td>—</td></tr>
+      <tr><td>Duplicate</td><td>Vendor + invoice # against live Register rows and the same run</td><td>#7 resend of #1</td></tr>
+      <tr><td>Approval</td><td>Over $500 → Approve / Reject email; 3-day timeout → review</td><td>#2 approved, #4 rejected, #9 at $500 not sent</td></tr>
+    </tbody></table></div>
+  <p class="muted">The AI never decides what gets paid, and the system never pays anyone. It hands the owner a checked, approved list with links to every PDF.</p>
+</section>
+
+<section aria-labelledby="faq-h">
+  <span class="eyebrow">Client questions</span>
+  <h2 id="faq-h">What business owners ask about it</h2>
+  <div class="faq-group">
+    <details open><summary>Who needs it?</summary><div><p>Small and mid-sized businesses receiving roughly 20 to 500 vendor invoices a month and handling them by hand: agencies, clinics, e-commerce shops, property managers, consultants with contractors, and the bookkeepers or VAs who run accounts payable for them.</p></div></details>
+    <details><summary>Why do companies need this?</summary><div><p>Manual accounts payable leaks money and time: duplicate payments from resent invoices, wrong totals because nobody re-adds the math, spending without a recorded approval, hours of data entry, and late payments because invoices wait for the weekly catch-up. Each gap gets a specific check here, and every invoice leaves a record.</p></div></details>
+    <details><summary>How does it work?</summary><div><p>An invoice arrives by email or form. Its text is read, AI extracts the fields, code validates them and checks for duplicates, anything over $500 waits for a one-click approval, then the PDF is filed and a row is written to the Register. Anything that fails a check goes to Needs Review with the reason.</p></div></details>
+    <details><summary>How does it cut the cycle from about a week to a day?</summary><div>
+      <p>Most of the delay is waiting, not working. The example below is illustrative (a business that does accounts payable in a weekly batch), not a measured client result.</p>
+      <div class="tbl"><table><thead><tr><th>Step</th><th>Manual</th><th>Automated</th></tr></thead><tbody>
+        <tr><td>Arrives</td><td>Monday, sits unread</td><td>Monday, picked up within a minute</td></tr>
+        <tr><td>Keyed and checked</td><td>Friday batch, ~8 min each</td><td>7–16 seconds (measured)</td></tr>
+        <tr><td>Approval asked</td><td>Friday, by chat</td><td>Monday, same minute, by email</td></tr>
+        <tr><td>Approval given</td><td>Next week</td><td>When the owner clicks, usually same day</td></tr>
+        <tr><td><b>Arrival → approved and recorded</b></td><td><b>Up to ~7 days</b></td><td><b>Same day; seconds at $500 or less</b></td></tr>
+      </tbody></table></div></div></details>
+    <details><summary>Does the AI decide what gets paid?</summary><div><p>No. AI reads, code checks, humans approve. The AI only converts text into fields; fixed rules decide whether an invoice passes, and a person approves every invoice over the limit.</p></div></details>
+    <details><summary>What if the AI reads something wrong?</summary><div><p>The code catches it. Totals are re-added, the AI's invoice number and total must appear in the PDF text, and missing fields fail validation. In testing the AI returned "not found" for a missing invoice number instead of inventing one, and copied a wrong vendor total exactly as printed, which the math check flagged.</p></div></details>
+    <details><summary>Does it pay vendors automatically?</summary><div><p>No, by design. Payment stays in the company's bank or accounting tool, under the owner's control.</p></div></details>
+    <details><summary>What happens when a vendor sends the same invoice twice?</summary><div><p>It is marked Duplicate with a note naming the original record and filed for review. The match is vendor + invoice number, ignoring spacing and punctuation, and it also catches two copies arriving in the same run.</p></div></details>
+    <details><summary>Can it read scanned or photographed invoices?</summary><div><p>Not in V1. They are detected, sent to Needs Review with a clear note, and never sent to the AI. OCR is the first roadmap item.</p></div></details>
+    <details><summary>What do we need to run it, and what does it cost?</summary><div><p>A Google account (Gmail, Drive, Sheets), an n8n instance (a small VPS or n8n Cloud) and an OpenRouter key. The AI costs about $0.0004 per invoice (estimate), roughly 4 cents per 100 invoices. The team keeps using email, a spreadsheet and Drive.</p></div></details>
+    <details><summary>Is our data safe? Where does it live?</summary><div><p>Invoices, PDFs and the Register stay in the company's own Google account; n8n runs on a server the business controls and keeps run logs there for troubleshooting. Only the invoice text goes to the AI model. Access uses Google sign-in (OAuth), not shared passwords.</p></div></details>
+    <details><summary>Can we change the limit, approvers or categories? Other currencies?</summary><div><p>Yes. The approval limit, approver, currency and category list are single settings, each tested with one invoice before going live. V1 uses one currency per setup; others are flagged for review.</p></div></details>
+    <details><summary>Does it connect to QuickBooks or Xero?</summary><div><p>Not in V1; the Register is the hand-off point. Bill creation in QuickBooks or Xero is on the roadmap.</p></div></details>
+    <details><summary>What happens if something breaks?</summary><div><p>The AI, Sheets, Drive and Gmail-label steps retry 3 times. If a run still fails, a separate workflow emails the failed step, the error, a plain-English likely fix and a link to the run. The original email or form submission remains, so nothing is lost.</p></div></details>
+    <details><summary>What does our team still do, and how long is setup?</summary><div><p>Approve invoices over the limit (one click), clear the weekly Needs Review list, and pay vendors as usual; the Owner SOP covers each task. This V1 was built and tested in 7 days; adapting it to a new business is estimated at 1 to 2 weeks.</p></div></details>
+  </div>
+</section>
+
+<section aria-labelledby="ev-h">
+  <span class="eyebrow">Evidence</span>
+  <h2 id="ev-h">Screens from the live system</h2>
+  <p class="muted small">Email addresses and the server address are blurred or cropped.</p>
+  <div class="shots">
+    <figure class="wide"><img src="screenshots/S8.png" alt="n8n execution view of the full Invoice Processing – Main workflow, with a list of successful executions from the final test" width="1919" height="920" loading="lazy"><figcaption>The full main workflow in n8n's execution view, final live test. Every run succeeded.</figcaption></figure>
+    <figure class="wide"><img src="screenshots/S1.png" alt="Close-up of the AI extraction and validation stage of the workflow" width="1919" height="1079" loading="lazy"><figcaption>AI and validation stage. Scanned PDFs branch off before the AI; failed checks branch to review.</figcaption></figure>
+    <figure class="wide"><img src="screenshots/S3.png" alt="Approval email for CloudDesk Software LLC invoice CD-2026-0917, $1,286.01, with Reject and Approve buttons" width="1780" height="832" loading="lazy"><figcaption>Approval email for an invoice over $500. One click records the decision, approver and time.</figcaption></figure>
+    <figure class="wide"><img src="screenshots/S5.png" alt="Invoice Register columns: validation status, approval status, approver, decision time, Drive link, status and notes for 10 test invoices" width="1876" height="300" loading="lazy"><figcaption>Invoice Register after the 10-invoice run: status, approver, time, Drive link and the reason for every exception.</figcaption></figure>
+    <figure><img src="screenshots/S6.png" alt="Google Drive Processed folder with four renamed invoice PDFs" width="1880" height="325" loading="lazy"><figcaption>Processed: approved PDFs, renamed date_Vendor_Invoice#.</figcaption></figure>
+    <figure><img src="screenshots/S7.png" alt="Google Drive Needs Review folder with six PDFs marked REJECTED, NO-NUMBER, DUPLICATE and REVIEW" width="1880" height="392" loading="lazy"><figcaption>Needs Review: the file name says why each invoice is there.</figcaption></figure>
+    <figure><img src="screenshots/S11.png" alt="Validate Invoice code node showing the AI fields as input and the validation code" width="1919" height="930" loading="lazy"><figcaption>Validate Invoice: AI fields in, rules in plain code, original PDF carried through.</figcaption></figure>
+    <figure><img src="screenshots/S9.png" alt="Error Alerts workflow: error trigger, build alert, email failure alert" width="1719" height="720" loading="lazy"><figcaption>Error Alerts: runs only when the main workflow fails.</figcaption></figure>
+  </div>
+</section>
+
+<section aria-labelledby="test-h">
+  <span class="eyebrow">Testing</span>
+  <h2 id="test-h">What was tested, and what it caught</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Scenario</th><th>Result</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>10 purpose-built invoices: clean, over limit (approve and reject), exactly $500, math error, missing number, future date, duplicate, scanned, emailed</td><td>All 10 matched the answer key on the final live run</td><td><span class="tag good">Pass</span></td></tr>
+      <tr><td>AI output read from the wrong field (JSON mode returns parsed fields)</td><td>Every invoice failed validation; reader fixed, retested with real AI output</td><td><span class="tag warn">Fixed</span></td></tr>
+      <tr><td>PDF dropped mid-pipeline by a data-mapping step</td><td>Logged but not filed; file now carried from intake, all PDFs filed</td><td><span class="tag warn">Fixed</span></td></tr>
+      <tr><td>Google Sheets API left disabled</td><td>"Forbidden" traced to the real cause and enabled</td><td><span class="tag warn">Fixed</span></td></tr>
+      <tr><td>Identical record IDs when invoices arrive together</td><td>Unique ID per invoice</td><td><span class="tag warn">Fixed</span></td></tr>
+      <tr><td>Same email processed twice</td><td>Labelled after logging; not picked up again</td><td><span class="tag good">Pass</span></td></tr>
+      <tr><td>Error alert content (simulated expired Google sign-in)</td><td>Names the failed step and the exact fix</td><td><span class="tag good">Pass</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<section aria-labelledby="imp-h">
+  <span class="eyebrow">Business impact · estimates</span>
+  <h2 id="imp-h">About 12 staff hours a month at 100 invoices</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Invoices / month</th><th>Manual</th><th>Automated</th><th>Saved (est.)</th><th>AI cost (est.)</th></tr></thead>
+    <tbody>
+      <tr><td class="num">50</td><td class="num">6.7 h</td><td class="num">0.8 h</td><td class="num">5.9 h</td><td class="num">$0.02</td></tr>
+      <tr><td class="num">100</td><td class="num">13.3 h</td><td class="num">1.6 h</td><td class="num">11.8 h</td><td class="num">$0.04</td></tr>
+      <tr><td class="num">300</td><td class="num">40.0 h</td><td class="num">4.8 h</td><td class="num">35.3 h</td><td class="num">$0.12</td></tr>
+    </tbody></table></div>
+  <p class="muted small">Assumptions: ~8 min manual handling per invoice; ~20% need approval (~1 min); ~15% need review (~5 min); ~$0.0004 AI per invoice. Estimates, not measured client results.</p>
+</section>
+
+<section aria-labelledby="lim-h">
+  <span class="eyebrow">Scope</span>
+  <h2 id="lim-h">What V1 does not do yet</h2>
+  <div class="two">
+    <div class="cell"><h3>Known limits in V1</h3><ul>
+      <li>Scanned or photographed invoices go to manual entry</li>
+      <li>Google sign-in renews weekly (app in testing mode)</li>
+      <li>One invoice email per check (up to ~60 an hour)</li>
+      <li>Settings live inside the workflow</li>
+      <li>No accounting-system sync</li></ul></div>
+    <div class="v2"><span class="eyebrow">Planned for V2 · not built</span><ul>
+      <li>OCR before the AI step</li>
+      <li>Published Google app (no weekly sign-in)</li>
+      <li>Approvals in a sub-workflow for batches</li>
+      <li>A Config tab in the Register</li>
+      <li>QuickBooks / Xero bill creation</li></ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="docs-h">
+  <span class="eyebrow">Files</span>
+  <h2 id="docs-h">Documentation and workflow files</h2>
+  <div class="docs">
+    <a class="doc" href="https://github.com/superkhael00/invoice-expense-automation/blob/main/docs/System-Documentation-Invoice-Processing.pdf"><b>System documentation</b><span>Public edition, 10 pages: client FAQ, architecture, controls, tests, impact</span></a>
+    <a class="doc" href="https://github.com/superkhael00/invoice-expense-automation/blob/main/docs/Owner-SOP-Invoice-Processing.pdf"><b>Owner SOP</b><span>6 pages: approvals, review list, alerts, troubleshooting</span></a>
+    <a class="doc" href="https://github.com/superkhael00/invoice-expense-automation/tree/main/workflows"><b>n8n workflows</b><span>Importable JSON, credentials and IDs removed</span></a>
+    <a class="doc" href="https://github.com/superkhael00/invoice-expense-automation/tree/main/test-invoices"><b>Test invoices</b><span>10 PDFs and the answer key</span></a>
+  </div>
+</section>
+
+<footer><span>Khael Mendoza · KhaelWorks · Tech VA and workflow automation · <a href="mailto:mjmendoza.workph@gmail.com">mjmendoza.workph@gmail.com</a></span><span>Built with n8n, OpenRouter, Gmail, Google Sheets and Google Drive</span></footer>
+</div>
+
+<script>
+(function(){
+const STAGES=[['Intake','Email or form'],['Read PDF text','Extract from File'],['AI extracts fields','gpt-4.1-mini'],['Code validation','Fields, math, dates, AI vs PDF'],['Duplicate check','Against the Register'],['Approval','Over $500 only'],['File and log','Drive + Register']];
+// stop: index of stage that sent it to review (-1 = none). appr: 'yes' | 'no' | null
+const INV=[
+ {n:1,v:'Summit Office Supply Co.',inv:'INV-4471',t:'$189.87',why:'Clean, under limit',src:'form',cat:'Office Supplies',stop:-1,appr:null,status:['Approved (auto)','good'],folder:'Processed',note:'—'},
+ {n:2,v:'CloudDesk Software LLC',inv:'CD-2026-0917',t:'$1,286.01',why:'Over limit',src:'form',cat:'Software & Subscriptions',stop:-1,appr:'yes',status:['Approved','good'],folder:'Processed',note:'—',date:'2026-09-12',due:'2026-09-27',sub:'$1,188.00',tax:'$98.01',what:'Project management suite, annual plan (12 seats)'},
+ {n:3,v:'Metro Fiber Internet',inv:'MF-883120',t:'$113.65',why:'Arrived by email',src:'email',cat:'Utilities & Internet',stop:-1,appr:null,status:['Approved (auto)','good'],folder:'Processed',note:'Email labelled invoice-processed'},
+ {n:4,v:'Rivera Web Design',inv:'RWD-0042',t:'$2,550.00',why:'Over limit, $0 tax',src:'form',cat:'Professional Services',stop:-1,appr:'no',status:['Rejected','bad'],folder:'Needs Review',note:'Rejected by approver',date:'2026-09-18',due:'2026-10-18',sub:'$2,550.00',tax:'$0.00',what:'Website redesign, phase 1; hosting setup'},
+ {n:5,v:'Greenleaf Catering',inv:'GLC-10385',t:'$474.65',why:'Math error',src:'form',cat:'Meals & Catering',stop:3,appr:null,status:['Needs Review','warn'],folder:'Needs Review',note:'Math error: subtotal 420.00 + tax 34.65 = 454.65, but invoice total is 474.65'},
+ {n:6,v:'Apex Print & Sign',inv:'(none)',t:'$308.51',why:'Missing invoice number',src:'form',cat:'Marketing & Creative',stop:3,appr:null,status:['Needs Review','warn'],folder:'Needs Review',note:'Missing invoice number (AI returned null)'},
+ {n:7,v:'Summit Office Supply Co.',inv:'INV-4471',t:'$189.87',why:'Resent duplicate of #1',src:'form',cat:'Office Supplies',stop:4,appr:null,status:['Duplicate','info'],folder:'Needs Review',note:"Duplicate of #1's record (same vendor + invoice number). Not paid twice."},
+ {n:8,v:'Harbor Courier Services',inv:'HCS-55219',t:'$146.14',why:'Future date',src:'form',cat:'Shipping & Courier',stop:3,appr:null,status:['Needs Review','warn'],folder:'Needs Review',note:'Invoice date 2027-01-15 is in the future'},
+ {n:9,v:'Pixel & Pine Stock Media',inv:'PP-7730',t:'$500.00',why:'Exactly at the limit',src:'form',cat:'Marketing & Creative',stop:-1,appr:null,status:['Approved (auto)','good'],folder:'Processed',note:'$500.00 is not over $500: no approval needed'},
+ {n:10,v:'Lakeside Janitorial',inv:'—',t:'—',why:'Scanned image PDF',src:'form',cat:'—',stop:1,appr:null,status:['Needs Review','warn'],folder:'Needs Review',note:'No readable text (likely a scanned/image PDF). Manual entry required.'}
+];
+const $=id=>document.getElementById(id);
+const pick=$('pick'), stages=$('stages'), mail=$('mailSlot'), dl=$('rowDl');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timers=[];
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e;}
+STAGES.forEach(([a,b],i)=>{const s=el('div','stg');const d=el('span','dot',String(i+1));const w=el('div');w.appendChild(el('b','',a));w.appendChild(el('span','',b));s.append(d,w);stages.appendChild(s);});
+INV.forEach(x=>{const b=el('button');b.type='button';b.setAttribute('aria-pressed','false');
+  const mid=el('span');mid.appendChild(document.createTextNode(x.v));mid.appendChild(el('span','why',x.why));
+  b.append(el('span','no','#'+x.n),mid,el('span','amt',x.t));b.addEventListener('click',()=>run(x,b));pick.appendChild(b);});
+function clear(){timers.forEach(clearTimeout);timers=[];[...stages.children].forEach(s=>{s.className='stg';s.querySelector('.dot').textContent=[...stages.children].indexOf(s)+1;s.querySelector('span:last-child').textContent=STAGES[[...stages.children].indexOf(s)][1];});mail.innerHTML='';dl.hidden=true;$('rowEmpty').hidden=false;}
+function later(fn,ms){timers.push(setTimeout(fn,reduce?0:ms));}
+function mark(i,cls,txt){const s=stages.children[i];s.className='stg '+cls;s.querySelector('.dot').textContent=cls==='ok'?'✓':cls==='stop'?'!':s.querySelector('.dot').textContent;if(txt)s.querySelector('span:last-child').textContent=txt;}
+function showRow(x){const f=[['vendor_name',x.v],['invoice_number',x.inv],['total',x.t],['category',x.cat],['source',x.src],['status',null],['drive folder',x.folder],['notes',x.note]];
+  if(x.appr){f.splice(6,0,['approved_by','owner (Approve/Reject click)'],['decided_at','time of the click'])}
+  dl.innerHTML='';f.forEach(([k,v])=>{dl.appendChild(el('dt','',k));const dd=el('dd');if(k==='status'){dd.appendChild(el('span','tag '+x.status[1],x.status[0]));}else dd.textContent=v;dl.appendChild(dd);});
+  dl.hidden=false;$('rowEmpty').hidden=true;}
+function finish(x,decided){const last=STAGES.length-1;
+  mark(last,'ok',x.folder+' folder · Register row written');showRow(x);}
+function approvalMail(x){const m=el('div','mail');m.appendChild(el('div','subj','Approve invoice: '+x.v+' '+x.inv+' – '+x.t));
+  const d=el('dl');[['Invoice date',x.date],['Due',x.due],['Category',x.cat],['For',x.what],['Subtotal',x.sub],['Tax',x.tax],['Total',x.t]].forEach(([k,v])=>{d.appendChild(el('dt','',k));d.appendChild(el('dd','',v));});m.appendChild(d);
+  const a=el('div','acts');const rj=el('button','', 'Reject');const ap=el('button','yes','Approve');rj.type=ap.type='button';
+  const hint=el('p','small muted',x.appr==='yes'?'In the test the owner clicked Approve. Try it.':'In the test the owner clicked Reject. Try it.');
+  function decide(yes){rj.disabled=ap.disabled=true;hint.textContent=yes===(x.appr==='yes')?'Recorded with approver and time.':'In the real test the owner chose '+(x.appr==='yes'?'Approve':'Reject')+'; showing that outcome.';
+    mark(5,'ok',(x.appr==='yes'?'Approved':'Rejected')+' by the owner');later(()=>finish(x),500);}
+  rj.addEventListener('click',()=>decide(false));ap.addEventListener('click',()=>decide(true));a.append(rj,ap);m.append(a,hint);mail.appendChild(m);}
+function run(x,btn){clear();[...pick.children].forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
+  const stop=x.stop;const end=stop>=0?stop:(x.appr?5:4);
+  for(let i=0;i<=end;i++){later(()=>{
+    if(i===stop){mark(i,'stop',i===1?'No readable text: AI skipped':i===4?'Duplicate of #1':'Failed: '+(x.n===5?'math':x.n===6?'missing invoice #':'future date'));}
+    else if(i===5&&x.appr){stages.children[5].className='stg now';stages.children[5].querySelector('span:last-child').textContent='Waiting for the owner';approvalMail(x);}
+    else{mark(i,'ok',i===0?(x.src==='email'?'Gmail: subject has invoice + PDF':'Upload form'):i===2&&x.n===6?'Returned null for invoice #':i===4&&stop<0&&!x.appr?'No match':null);}
+  },i*380);}
+  if(stop>=0){for(let i=stop+1;i<STAGES.length-1;i++)later(()=>stages.children[i].classList.add('skip'),(stop+1)*380);later(()=>finish(x),(stop+1)*380+200);}
+  else if(!x.appr){later(()=>{mark(5,'ok',x.n===9?'$500.00 is not over $500: skipped':'Under $500: skipped');},5*380);later(()=>finish(x),6*380);}
+}
+})();
+</script>
+</body>
+</html>
