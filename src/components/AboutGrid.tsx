@@ -62,7 +62,7 @@ export default function AboutGrid() {
           </p>
 
           <p className="agrid__note">
-            At <strong>Primoris Manpower Services</strong> I ran payroll for about 500 deployed
+            At <strong>Primoris Manpower Services Company Inc.</strong> I ran payroll for about 500 deployed
             employees and built Excel VBA tools that cut estimated manual processing by about 80%.
             Since July 2026 I have built and tested{' '}
             <Link className="agrid__link" to="/projects">

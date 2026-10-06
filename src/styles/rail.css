@@ -64,7 +64,9 @@
     align-items: center;
     gap: 7px;
     margin-top: 20px;
-    font-size: 22px;
+    /* Sized for a three-word name on one line (template default was 22px). */
+    font-size: 19px;
+    white-space: nowrap;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
