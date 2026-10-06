@@ -44,7 +44,7 @@ export type Profile = {
 }
 
 export const profile: Profile = {
-  name: 'Khael Mendoza',
+  name: 'Michael John Mendoza',
   firstName: 'Khael',
   handle: '@khaelworks',
   role: 'Workflow & AI Automation',
@@ -62,11 +62,12 @@ export const profile: Profile = {
   hero: {
     body: 'I build n8n and AI workflows that take repetitive invoice, bookkeeping, recruiting and lead work off small teams, with approvals and audit logs built in.',
     portraitSrc: '/me-portrait.jpg',
-    portraitAlt: 'Khael Mendoza',
+    portraitAlt: 'Michael John Mendoza',
   },
   socials: [
     { label: 'LinkedIn profile', href: 'https://www.linkedin.com/in/michael-john-mendoza', iconPath: '/icons/linkedin.svg' },
     { label: 'Upwork profile', href: 'https://www.upwork.com/freelancers/~01671953adcc8dcd95', iconPath: '/icons/tools/upwork-mono.svg' },
+    { label: 'OnlineJobs.ph profile', href: 'https://www.onlinejobs.ph/jobseekers/info/5292839', iconPath: '/icons/tools/olj-mono.svg' },
     { label: 'GitHub profile', href: 'https://github.com/superkhael00', iconPath: '/icons/tools/github-mono.svg' },
   ],
 }

@@ -1,6 +1,6 @@
 # KhaelWorks portfolio · khaelworks.tech
 
-The portfolio site of Khael Mendoza (Michael John Cuevas Mendoza), workflow and AI automation specialist.
+The portfolio site of Michael John Mendoza (Khael), full name Michael John Cuevas Mendoza, workflow and AI automation specialist.
 
 Built from the [BrewedOps portfolio template](https://github.com/brewed-ops/portfolio-template) (React 19, Vite, TypeScript). See `LICENSE`: the template's license allows using it for your own portfolio, including your own freelance services, but not reselling it or building portfolios for other people.
 
