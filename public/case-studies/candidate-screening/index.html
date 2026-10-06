@@ -1,0 +1,365 @@
+<title>Candidate Screening System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,600;75..100,800&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: case-study column; the centrepiece is a step-through replay of one candidate (control panel + live Sheet row + inbox) */
+:root{
+  --paper:#f3f4f7; --surface:#ffffff; --ink:#151a2b; --muted:#5a6177; --line:#d8dbe5;
+  --accent:#3346c9; --accent-soft:#e3e7fb; --human:#b7700a; --human-soft:#fbefd9;
+  --good:#23824a; --warn:#b7700a;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10131d; --surface:#181c2a; --ink:#e6e8f1; --muted:#9da3b8; --line:#2b3044;
+  --accent:#8c9cff; --accent-soft:#1f2650; --human:#f0b04e; --human-soft:#3a2b12;
+  --good:#5fcf8a; --warn:#f0b04e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10131d; --surface:#181c2a; --ink:#e6e8f1; --muted:#9da3b8; --line:#2b3044;
+  --accent:#8c9cff; --accent-soft:#1f2650; --human:#f0b04e; --human-soft:#3a2b12;
+  --good:#5fcf8a; --warn:#f0b04e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:16.5px/1.6 var(--f-body);padding-inline:20px;padding-block:0 48px}
+.wrap{max-width:1060px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.1;margin:0}
+h1{font-size:clamp(2.2rem,5.6vw,3.6rem);font-weight:800;font-stretch:80%;letter-spacing:-.01em}
+h2{font-size:1.75rem;font-weight:800;font-stretch:85%}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0;max-width:66ch}
+a{color:var(--accent)}
+.eyebrow{font:600 .74rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+header{display:grid;gap:18px;padding-block:52px 36px}
+section{display:grid;gap:18px;padding-block:44px;border-top:1px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:600 .76rem/1 var(--f-mono);padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* replay */
+.replay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:880px){.replay{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:16px;min-width:0}
+.stepnote{display:grid;gap:6px;min-height:150px}
+.who{font:600 .72rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.who.human{color:var(--human)}
+.stepnote h3{font-size:1.3rem;font-family:var(--f-display);font-weight:800;font-stretch:90%}
+.controls{display:flex;flex-wrap:wrap;gap:10px}
+button{font:600 .95rem/1 var(--f-body);cursor:pointer;border-radius:6px;padding:12px 16px;border:1px solid var(--accent);background:var(--accent);color:var(--surface)}
+button.human{background:var(--human);border-color:var(--human)}
+button.ghost{background:transparent;color:var(--accent);border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.pipe-wrap{overflow-x:auto;padding-bottom:4px}
+.pipe{display:flex;gap:4px;min-width:max-content}
+.stage{font:600 .68rem/1.2 var(--f-mono);padding:7px 8px;border-radius:4px;border:1px solid var(--line);color:var(--muted);background:var(--paper);white-space:nowrap;transition:background .3s,color .3s}
+.stage.done{color:var(--ink);background:var(--accent-soft);border-color:var(--accent-soft)}
+.stage.now{color:var(--surface);background:var(--accent);border-color:var(--accent)}
+.log{font:.78rem/1.7 var(--f-mono);color:var(--muted);border-top:1px dashed var(--line);padding-top:12px;min-height:3.4em}
+.log .ok{color:var(--good)}
+
+.sheet{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.sheet-top{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;background:var(--paper);border-bottom:1px solid var(--line);font:600 .74rem/1.3 var(--f-mono);color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,11.5em) minmax(0,1fr);font:.8rem/1.4 var(--f-mono)}
+.cols div{padding:6px 12px;border-bottom:1px solid var(--line);min-width:0;overflow-wrap:anywhere}
+.cols .k{color:var(--muted);border-right:1px solid var(--line)}
+.cols .v.flash{animation:flash 1.2s ease-out}
+.cols .v.mine{background:var(--human-soft);font-weight:600}
+@keyframes flash{from{background:var(--accent-soft)}to{background:transparent}}
+.crit{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 10px;font:.78rem/1.4 var(--f-mono);padding:10px 12px}
+.crit .s{color:var(--good);font-weight:600}
+
+.inbox{display:grid;gap:10px;min-width:0}
+.inbox-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mails{display:grid;gap:8px;max-height:430px;overflow-y:auto;padding-right:2px}
+.mail{background:var(--surface);border:1px solid var(--line);border-left-width:4px;border-radius:6px;padding:10px 12px;display:grid;gap:3px;animation:pop .35s ease-out}
+.mail.cand{border-left-color:var(--accent)}
+.mail.rec{border-left-color:var(--human)}
+.mail.cal{border-left-color:var(--good)}
+.mail .to{font:600 .68rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mail .subj{font-weight:600;font-size:.92rem}
+.mail .body{font-size:.84rem;color:var(--muted)}
+.empty{color:var(--muted);font-size:.9rem;padding:18px;border:1px dashed var(--line);border-radius:6px;text-align:center}
+@keyframes pop{from{transform:translateY(6px);opacity:.3}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.mail,.cols .v.flash,.stage{animation:none!important;transition:none!important}}
+
+/* content */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.cell{display:grid;gap:8px;align-content:start;min-width:0}
+ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.diagram{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.diagram svg{display:block;min-width:660px;width:100%;height:auto}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .7rem/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.86em;white-space:nowrap}
+.tag{font:600 .7rem/1 var(--f-mono);padding:4px 7px;border-radius:4px;white-space:nowrap;background:var(--accent-soft)}
+.split{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+@media (max-width:760px){.split{grid-template-columns:minmax(0,1fr)}}
+.split > div{padding:18px 20px;display:grid;gap:8px;align-content:start;border-right:1px solid var(--line)}
+.split > div:last-child{border-right:0}
+@media (max-width:760px){.split > div{border-right:0;border-bottom:1px solid var(--line)}.split > div:last-child{border-bottom:0}}
+.split h3 span{font:600 .7rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+.big{font-family:var(--f-display);font-weight:800;font-stretch:80%;font-size:2.6rem;line-height:1}
+.note{font-size:.88rem;color:var(--muted)}
+.shots{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
+.shots .wide{grid-column:1/-1}
+@media (max-width:720px){.shots{grid-template-columns:minmax(0,1fr)}}
+figure{margin:0;display:grid;gap:8px;min-width:0;align-content:start}
+figure img{display:block;width:100%;height:auto;max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+figure img.tall{max-height:560px;object-fit:cover;object-position:top}
+figcaption{font-size:.86rem;color:var(--muted)}
+footer{padding-top:28px;border-top:1px solid var(--line);display:grid;gap:6px}
+footer small{font-size:.78rem;color:var(--muted)}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Case study · HR operations automation · Philippines</span>
+  <h1>AI Candidate Screening &amp; Shortlisting System</h1>
+  <p style="font-size:1.12rem">A deployable n8n template for BPOs, recruiters and staffing agencies. It reads every PDF resume, scores it against the client's own rubric with quoted evidence, and hands the recruiter a ranked list. The recruiter makes every decision; the system sends the emails, the questionnaire and the interview booking that follow.</p>
+  <div class="chips">
+    <span class="chip on">v1.0 · built and tested · 2 Oct 2026</span>
+    <span class="chip">n8n (self-hosted)</span><span class="chip">OpenRouter · GPT-4.1</span><span class="chip">Google Sheets</span><span class="chip">Drive</span><span class="chip">Gmail</span><span class="chip">Google Calendar</span>
+  </div>
+</header>
+
+<section id="replay" aria-labelledby="replay-h">
+  <span class="eyebrow">Replay a tested run</span>
+  <h2 id="replay-h">One candidate, from application to booked interview</h2>
+  <p class="muted">Step through the final regression run for one fictional candidate. Scores, statuses and the booked slot come from that run; email wording is shortened. Amber steps are the recruiter's decisions, which the system never makes on its own.</p>
+  <div class="replay">
+    <div class="panel">
+      <div class="stepnote" aria-live="polite">
+        <span class="who" id="who">Candidate · application form</span>
+        <h3 id="stepTitle">A candidate applies for a voice CSR role</h3>
+        <p id="stepText" class="muted">She enters her details, answers four Yes/No knockout questions and uploads a PDF resume.</p>
+      </div>
+      <div class="controls">
+        <button id="next" type="button">Submit the application</button>
+        <button id="reset" type="button" class="ghost">Start over</button>
+      </div>
+      <div class="pipe-wrap" aria-label="Candidate status"><div class="pipe" id="pipe"></div></div>
+      <div class="sheet">
+        <div class="sheet-top"><span>Candidates tab · one row</span><span id="rowId">no row yet</span></div>
+        <div class="cols" id="cols"></div>
+        <div class="crit" id="crit" hidden></div>
+      </div>
+      <div class="log" id="log">n8n run log appears here.</div>
+    </div>
+    <div class="inbox">
+      <div class="inbox-head"><h3>Emails and invites</h3><span class="note"><span style="color:var(--accent)">■</span> candidate &nbsp;<span style="color:var(--human)">■</span> recruiter &nbsp;<span style="color:var(--good)">■</span> calendar</span></div>
+      <div class="mails" id="mails"><p class="empty" id="empty">Nothing sent yet. Submit the application to start.</p></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="prob-h">
+  <span class="eyebrow">The problem</span>
+  <h2 id="prob-h">Screening by hand is slow, uneven and hard to defend</h2>
+  <div class="two">
+    <div class="cell"><h3>Before</h3><ul>
+      <li>Hundreds of resumes per opening, each opened, read and logged by hand</li>
+      <li>Two recruiters score the same resume differently, with no record of why</li>
+      <li>Candidates wait days for any reply; good ones accept other offers</li>
+      <li>Decision emails, questionnaires and interview times are copy-paste work</li>
+      <li>Tools that auto-reject people cannot explain their reasons</li></ul></div>
+    <div class="cell"><h3>After (v1.0)</h3><ul>
+      <li>Every resume scored against one rubric, each score backed by a quote</li>
+      <li>An acknowledgment reaches the candidate in about 20 seconds</li>
+      <li>The recruiter picks Advance, Hold or Reject from a dropdown; the email follows</li>
+      <li>Strong candidates get a secure questionnaire link and book their own interview</li>
+      <li>An Audit Log records every score, email and decision with its reason</li></ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="arch-h">
+  <span class="eyebrow">How it works</span>
+  <h2 id="arch-h">One workflow, five lanes, two human decisions</h2>
+  <div class="diagram">
+  <svg viewBox="0 0 760 360" role="img" aria-label="Five lanes: intake and scoring, recruiter decisions, Stage 2 questionnaire, interview booking, error alerts">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+    <g fill="none" stroke="var(--muted)" stroke-width="1.25">
+      <path d="M170 92H206" marker-end="url(#ar)"/><path d="M350 92H386" marker-end="url(#ar)"/><path d="M530 92H566" marker-end="url(#ar)"/>
+      <path d="M638 140V184" marker-end="url(#ar)"/>
+      <path d="M566 230H530" marker-end="url(#ar)"/>
+    </g>
+    <path d="M24 300H736" stroke="var(--line)" stroke-dasharray="4 4"/>
+    <g font-family="IBM Plex Sans, sans-serif" font-size="13" fill="var(--ink)">
+      <rect x="24" y="44" width="146" height="96" rx="8" fill="var(--surface)" stroke="var(--muted)"/>
+      <text x="36" y="66" font-weight="600">1 · Intake</text><text x="36" y="86">Form + PDF</text><text x="36" y="102">AI scores rubric</text><text x="36" y="118">Code: score, band</text>
+      <rect x="206" y="44" width="144" height="96" rx="8" fill="var(--human-soft)" stroke="var(--human)" stroke-width="2"/>
+      <text x="218" y="66" font-weight="600">Recruiter</text><text x="218" y="86">Reads evidence</text><text x="218" y="102">Advance, Hold</text><text x="218" y="118">or Reject</text>
+      <rect x="386" y="44" width="144" height="96" rx="8" fill="var(--surface)" stroke="var(--muted)"/>
+      <text x="398" y="66" font-weight="600">2 · Decisions</text><text x="398" y="86">Every 2 min</text><text x="398" y="102">Undo window</text><text x="398" y="118">Templated email</text>
+      <rect x="566" y="44" width="170" height="96" rx="8" fill="var(--surface)" stroke="var(--muted)"/>
+      <text x="578" y="66" font-weight="600">3 · Stage 2</text><text x="578" y="86">Secure link</text><text x="578" y="102">AI scores answers</text><text x="578" y="118">Claim check, 60/40</text>
+      <rect x="566" y="184" width="170" height="92" rx="8" fill="var(--human-soft)" stroke="var(--human)" stroke-width="2"/>
+      <text x="578" y="206" font-weight="600">Recruiter</text><text x="578" y="226">Reads Stage 2</text><text x="578" y="242">Schedule Interview</text>
+      <rect x="386" y="184" width="144" height="92" rx="8" fill="var(--surface)" stroke="var(--muted)"/>
+      <text x="398" y="206" font-weight="600">5 · Booking</text><text x="398" y="226">Free slots only</text><text x="398" y="242">Calendar + Meet</text>
+      <rect x="24" y="184" width="326" height="92" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="36" y="206" font-weight="600">Google Sheet · the recruiter's screen</text><text x="36" y="226">Config · Rubric · Questionnaire</text><text x="36" y="242">Candidates · Audit Log</text><text x="36" y="258" fill="var(--muted)">Every lane reads Config first</text>
+      <text x="24" y="330" font-weight="600">4 · Error alerts</text><text x="140" y="330" fill="var(--muted)">watch every lane: 3 retries, then an alert email and an ERROR row</text>
+    </g>
+  </svg>
+  </div>
+  <p class="muted">Amber boxes are the only places a candidate moves forward or out. The client changes the job, rubric, questions, emails and timing in the Sheet, never inside n8n.</p>
+</section>
+
+<section aria-labelledby="ai-h">
+  <span class="eyebrow">AI logic</span>
+  <h2 id="ai-h">The AI reads, code checks, a person decides</h2>
+  <div class="split">
+    <div><h3><span style="color:var(--accent)">AI</span>Scores with evidence</h3><p class="note">Scores each rubric criterion and Stage 2 answer 0–5 against written anchors, quoting the line behind every score. Labels each claim in the questionnaire against the resume.</p></div>
+    <div><h3><span style="color:var(--good)">Code</span>Checks and calculates</h3><p class="note">Confirms each quote really appears, does every total and band, flags only unsupported or inflated claims, and stops the run on invalid AI output instead of saving a wrong score.</p></div>
+    <div><h3><span style="color:var(--human)">Recruiter</span>Makes every decision</h3><p class="note">Advance, Hold, Reject and Schedule Interview are set by a person. Emails wait out an undo window. Knockouts are the candidate's own Yes/No answers and are flagged, never rejected.</p></div>
+  </div>
+  <p class="muted">Prompts exclude name, age, sex, civil status, religion, ethnicity and location, and treat resume text as data, not instructions. Combined score = resume 60% + questionnaire 40%, so a polished questionnaire cannot hide a weak resume (a 2 and a 100 combine to 41.2 in testing).</p>
+</section>
+
+<section aria-labelledby="ev-h">
+  <span class="eyebrow">Evidence</span>
+  <h2 id="ev-h">Screens from the test runs</h2>
+  <p class="muted">Real screens from the tested build. Test email addresses are blurred or replaced with example.com; the email images are rendered from the exact HTML the workflow sent.</p>
+  <div class="shots">
+    <figure class="wide"><a href="screenshots/S1.png"><img src="screenshots/S1.png" alt="n8n canvas with five labelled lanes" loading="lazy"></a><figcaption><b>S1</b> · The whole workflow: five lanes, each with its own trigger and a sticky note.</figcaption></figure>
+    <figure><a href="screenshots/S2.png"><img src="screenshots/S2.png" alt="Job application form" loading="lazy" class="tall"></a><figcaption><b>S2</b> · Application form: four Yes/No knockouts, PDF resume, privacy consent.</figcaption></figure>
+    <figure><a href="screenshots/S3.png"><img src="screenshots/S3.png" alt="Acknowledgment email" loading="lazy"></a><figcaption><b>S3</b> · The candidate's acknowledgment, sent about 20 seconds after applying.</figcaption></figure>
+    <figure class="wide"><a href="screenshots/S4.png"><img src="screenshots/S4.png" alt="Candidates tab with scores and statuses" loading="lazy"></a><figcaption><b>S4</b> · Candidates tab: score, band, status and recruiter decision for every test candidate.</figcaption></figure>
+    <figure><a href="screenshots/S5.png"><img src="screenshots/S5.png" alt="Recruiter summary email, Shortlist 100" loading="lazy" class="tall"></a><figcaption><b>S5</b> · Recruiter summary: every criterion scored with the resume line behind it.</figcaption></figure>
+    <figure><a href="screenshots/S6.png"><img src="screenshots/S6.png" alt="Knockout fail email" loading="lazy" class="tall"></a><figcaption><b>S6</b> · A knockout "No" is flagged for review, never rejected automatically.</figcaption></figure>
+    <figure class="wide"><a href="screenshots/S7.png"><img src="screenshots/S7.png" alt="Recruiter decision dropdown" loading="lazy"></a><figcaption><b>S7</b> · The recruiter decides from a dropdown: Advance, Hold or Reject.</figcaption></figure>
+    <figure><a href="screenshots/S8.png"><img src="screenshots/S8.png" alt="Advance email with Stage 2 link" loading="lazy"></a><figcaption><b>S8</b> · Advance email with a personal, single-use questionnaire link.</figcaption></figure>
+    <figure><a href="screenshots/S9.png"><img src="screenshots/S9.png" alt="Stage 2 questionnaire" loading="lazy" class="tall"></a><figcaption><b>S9</b> · Stage 2 questions, loaded from the Questionnaire tab.</figcaption></figure>
+    <figure><a href="screenshots/S10.png"><img src="screenshots/S10.png" alt="Stage 2 email with CHECK CLAIMS" loading="lazy" class="tall"></a><figcaption><b>S10</b> · CHECK CLAIMS: answers the resume does not support are flagged. Combined score 41.2.</figcaption></figure>
+    <figure><a href="screenshots/S11.png"><img src="screenshots/S11.png" alt="Interview booking time slots" loading="lazy" class="tall"></a><figcaption><b>S11</b> · Booking page: only free slots, with busy time, lunch and weekends removed.</figcaption></figure>
+    <figure><a href="screenshots/S12.png"><img src="screenshots/S12.png" alt="Google Calendar interview event" loading="lazy"></a><figcaption><b>S12</b> · The booked interview in Google Calendar, with a Google Meet link.</figcaption></figure>
+    <figure><a href="screenshots/S14.png"><img src="screenshots/S14.png" alt="Error alert email" loading="lazy"></a><figcaption><b>S14</b> · Error alert naming the failed step, sent after 3 retries.</figcaption></figure>
+    <figure class="wide"><a href="screenshots/S13.png"><img src="screenshots/S13.png" alt="Audit Log tab" loading="lazy"></a><figcaption><b>S13</b> · Audit Log: every score, email and decision with its reason and execution number.</figcaption></figure>
+  </div>
+</section>
+
+<section aria-labelledby="test-h">
+  <span class="eyebrow">Evidence</span>
+  <h2 id="test-h">41 of 41 tests passed on the final build</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Suite</th><th>What it covers</th><th>First run</th><th>Final</th></tr></thead>
+    <tbody>
+      <tr><td>Final regression</td><td>Scoring, knockout fail, duplicate, decisions, locked undo window, Stage 2, booking, reused links, real error alert</td><td class="num">10 / 12</td><td><span class="tag">12 / 12 PASS</span></td></tr>
+      <tr><td>Phase tests</td><td>Decisions, Stage 2 questionnaire, interview booking and their guard cases</td><td class="num">16 / 16</td><td><span class="tag">16 / 16 PASS</span></td></tr>
+      <tr><td>Core screening</td><td>12 fictional resumes: strong, average, weak, knockout, duplicate, missing info; plus an error path</td><td class="num">11 / 13</td><td><span class="tag">13 / 13 PASS</span></td></tr>
+    </tbody></table></div>
+  <div class="two">
+    <div class="cell"><h3>What testing caught</h3><ul>
+      <li>A vague rubric anchor scored an average candidate too low; fixed in the Sheet, no node edits</li>
+      <li>A questionnaire claimed experience the resume did not show; added the claim check</li>
+      <li>An honest "4 years" answer was flagged; the AI now labels claims and code decides what counts</li>
+      <li>A Config change released a pending Reject early; the release time is now locked</li></ul></div>
+    <div class="cell"><h3>Guardrails confirmed every run</h3><ul>
+      <li>No candidate rejected by the AI</li>
+      <li>Knockout failures flagged for review</li>
+      <li>Duplicates linked, not re-scored</li>
+      <li>No candidate email mentions scores or AI</li></ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="imp-h">
+  <span class="eyebrow">Business impact · estimates</span>
+  <h2 id="imp-h">About 33 recruiter hours a month back, for under US$5 of AI</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Task per month (estimate)</th><th>Manual</th><th>With the system</th></tr></thead>
+    <tbody>
+      <tr><td>Read, score and log 200 resumes</td><td class="num">26.7 h</td><td class="num">5.0 h review</td></tr>
+      <tr><td>Write and send decision emails</td><td class="num">6.7 h</td><td class="num">in review</td></tr>
+      <tr><td>Schedule 20 interviews</td><td class="num">5.0 h</td><td class="num">0.3 h</td></tr>
+      <tr><td><b>Total</b></td><td class="num"><b>38.4 h</b></td><td class="num"><b>5.3 h</b></td></tr>
+    </tbody></table></div>
+  <p class="note">Planning estimates, not measured client results. Assumes one role, 200 applications a month, 8 minutes to screen a resume by hand, 1.5 minutes to review a pre-scored row, 2 minutes per decision email and 15 minutes to schedule each interview. AI cost measured in testing at about US$0.01 per resume and US$0.02 per questionnaire on GPT-4.1.</p>
+</section>
+
+<section aria-labelledby="next-h">
+  <span class="eyebrow">Limits and roadmap</span>
+  <h2 id="next-h">What v1.0 leaves out on purpose</h2>
+  <div class="two">
+    <div class="cell"><h3>Known limits</h3><ul>
+      <li>Text-based PDF resumes only</li><li>One job per Sheet</li><li>Rescheduling is done in Google Calendar</li><li>Decisions are picked up every 2 minutes</li><li>Old data is deleted by hand</li></ul></div>
+    <div class="cell"><h3>Next versions</h3><ul>
+      <li>v1.3: rescheduling and interview reminders</li>
+      <li>v2.0: several jobs at once, scanned-resume OCR, redaction before AI, retention auto-delete, a recruiter dashboard</li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <small>All candidates, companies and emails shown are fictional test data, in line with the Data Privacy Act of 2012 (RA 10173).</small>
+  <small>© 2026 Khael Mendoza. All rights reserved. Portfolio showcase only; the deployable workflow is available to clients on request.</small>
+  <small>Prepared by Khael Mendoza · mjmendoza.workph@gmail.com</small>
+</footer>
+</div>
+
+<script>
+const STAGES=["Applied","Scored","Decision pending","Advanced","Stage 2 done","Invited","Interview booked"];
+const ROW0={status:"",weighted_score:"",score_band:"",knockout_result:"",recruiter_decision:"",decision_email_sent:"",stage2_score:"",combined_score:"",interview_status:"",interview_start:""};
+const STEPS=[
+ {who:"Candidate · application form",title:"A candidate applies for a voice CSR role",text:"She enters her details, answers four Yes/No knockout questions and uploads a PDF resume.",btn:"Submit the application"},
+ {who:"System · Lane 1",title:"Application received and saved",text:"The PDF goes to the private Drive folder, the knockouts are checked and a row is added. She gets an acknowledgment right away.",btn:"Run AI scoring",stage:0,
+  row:{status:"New",knockout_result:"PASS"},log:["Upload Resume to Drive","Check Duplicate & Prepare Row · no duplicate","Save Candidate Row","Send Candidate Acknowledgment"],
+  mails:[["cand","To candidate","Application received · Customer Service Representative","We have your application and will be in touch. Reference number included."]]},
+ {who:"System · Lane 1",title:"Scored 100 out of 100: Shortlist",text:"The AI scored six rubric criteria with quoted evidence. Code verified every quote, did the weighted math and set the band. A band sorts the list; it decides nothing.",btn:"Recruiter sets Advance",human:true,stage:1,
+  row:{weighted_score:"100",score_band:"Shortlist"},crit:true,log:["AI Score Resume (OpenRouter)","Calculate Weighted Score · 6/6 quotes verified","Send Recruiter Summary"],
+  mails:[["rec","To recruiter","[Shortlist 100] Candidate · CSR Voice","Score per criterion with the resume line behind each score."]]},
+ {who:"Recruiter · Google Sheet",cls:"human",title:"The recruiter picks Advance",text:"She reads the evidence and chooses Advance from the dropdown. The email waits out the undo window; clearing the cell now would cancel it.",btn:"Let the undo window end",stage:2,
+  row:{recruiter_decision:"Advance",decision_email_sent:"PENDING:Advance until (locked time)"},mine:["recruiter_decision"],log:["Find Decisions to Process · undo window started"]},
+ {who:"System · Lane 2",title:"Advance email sent with a personal link",text:"After the window, the Advance email goes out with a Stage 2 questionnaire link. The link is tied to her row by a random token and expires in 7 days.",btn:"Candidate answers Stage 2",stage:3,
+  row:{status:"Advanced",decision_email_sent:"TRUE"},log:["Send Decision Email","Update Candidate Decision · token saved"],
+  mails:[["cand","To candidate","Next step for your application","Please complete a short questionnaire using your personal link (valid 7 days)."]]},
+ {who:"System · Lane 3",title:"Questionnaire scored, no claims to check",text:"Four answers scored with quotes. Every claim matched the resume, so no CHECK CLAIMS flag. Combined score = resume 60% + questionnaire 40%.",btn:"Recruiter sets Schedule Interview",human:true,stage:4,
+  row:{stage2_score:"100",combined_score:"100"},log:["Validate Stage 2 Link · valid, unused","AI Evaluate Answers (OpenRouter)","Calculate Stage 2 Score · 0 claim flags"],
+  mails:[["rec","To recruiter","[Stage 2 done] Candidate · Questionnaire 100 | Combined 100","Answer scores, evidence and summary."]]},
+ {who:"Recruiter · Google Sheet",cls:"human",title:"The recruiter asks for an interview",text:"She sets Schedule Interview. The candidate receives a booking link that only shows free times in the recruiter's calendar.",btn:"Candidate books a time",stage:5,
+  row:{interview_status:"INVITED"},mine:["interview_status"],log:["Find Decisions to Process","Send interview booking link"],
+  mails:[["cand","To candidate","Book your interview · Customer Service Representative","Choose a 30-minute slot from the link (valid 5 days)."]]},
+ {who:"System · Lane 5",title:"Interview booked, no back-and-forth",text:"She picked Tue, Oct 6, 10:00 AM. The slot was re-checked against the calendar, then a Google Calendar event with a Meet link went to both sides. A slot already taken by another candidate was hidden.",btn:"Replay finished",stage:6,
+  row:{status:"Interview Scheduled",interview_status:"BOOKED",interview_start:"2026-10-06 10:00"},log:["Get Busy Times · booked slots hidden","Recheck Slot Is Free","Create Interview Event · Google Meet"],
+  mails:[["cal","Calendar invite · both","Interview · Customer Service Representative","Tue, Oct 6, 10:00–10:30 AM (Philippine Time) · Google Meet link"],["rec","To recruiter","[Interview booked] Candidate · Tue, Oct 6 10:00 AM","Combined score and Stage 2 summary for the interview."]]}
+];
+const CRIT=[["C1","Voice / customer service experience","30"],["C2","English communication evidence","20"],["C3","Performance metrics","15"],["C4","Technical troubleshooting","15"],["C5","Systems and tools","10"],["C6","Education and training","10"]];
+let i=0,row={...ROW0},mine=new Set();
+const $=id=>document.getElementById(id);
+function drawCols(changed){
+  $("cols").innerHTML=Object.keys(row).map(k=>`<div class="k">${k}</div><div class="v${changed.includes(k)?" flash":""}${mine.has(k)?" mine":""}">${row[k]||"—"}</div>`).join("");
+}
+function drawPipe(at){
+  $("pipe").innerHTML=STAGES.map((s,n)=>`<span class="stage${at===undefined?"":n<at?" done":n===at?" now":""}">${s}</span>`).join("");
+}
+function render(){
+  const s=STEPS[i];
+  $("who").textContent=s.who;$("who").className="who"+(s.cls?" "+s.cls:"");
+  $("stepTitle").textContent=s.title;$("stepText").textContent=s.text;
+  const nx=$("next");nx.textContent=s.btn;nx.className=s.human?"human":"";nx.disabled=i===STEPS.length-1;
+}
+function step(){
+  if(i>=STEPS.length-1)return;
+  i++;const s=STEPS[i];
+  if(s.mine)s.mine.forEach(k=>mine.add(k));
+  Object.assign(row,s.row||{});
+  drawCols(Object.keys(s.row||{}));drawPipe(s.stage);
+  $("rowId").textContent="CAND-…-R01 (fictional)";
+  if(s.crit){const c=$("crit");c.hidden=false;c.innerHTML=CRIT.map(x=>`<span>${x[0]}</span><span>${x[1]} · weight ${x[2]}</span><span class="s">5/5 ✓</span>`).join("");}
+  if(s.log)$("log").innerHTML=s.log.map(l=>`<div class="ok">✓ ${l}</div>`).join("");
+  if(s.mails){const box=$("mails");const e=$("empty");if(e)e.remove();
+    s.mails.forEach(m=>{const d=document.createElement("div");d.className="mail "+m[0];d.innerHTML=`<span class="to">${m[1]}</span><span class="subj">${m[2]}</span><span class="body">${m[3]}</span>`;box.appendChild(d);});
+    box.scrollTop=box.scrollHeight;}
+  render();
+}
+function reset(){
+  i=0;row={...ROW0};mine=new Set();drawCols([]);drawPipe();$("crit").hidden=true;$("rowId").textContent="no row yet";
+  $("log").textContent="n8n run log appears here.";
+  $("mails").innerHTML='<p class="empty" id="empty">Nothing sent yet. Submit the application to start.</p>';render();
+}
+$("next").addEventListener("click",step);$("reset").addEventListener("click",reset);
+reset();
+</script>
