@@ -254,8 +254,10 @@
   width: 100%;
   height: 100%;
   max-width: 100%;
-  object-fit: contain;
-  object-position: bottom right;
+  /* A real photo, not a cut-out: fill the column and frame it. */
+  object-fit: cover;
+  object-position: center 20%;
+  border-radius: 0 0 var(--radius-card) 0;
 }
 
 /* ---------- Below the shell ---------- */
@@ -266,7 +268,7 @@
   /* The corner pull is a two-column move; stacked, it just runs the art off
      the right edge of the sheet. */
   .agrid__portrait { order: -1; height: min(38vh, 300px); margin: 0; justify-content: center; }
-  .agrid__portrait img { object-position: bottom center; }
+  .agrid__portrait img { object-position: center 18%; border-radius: 18px; }
 }
 @media (max-width: 720px) {
   .agrid__bar { grid-template-columns: minmax(0, 1fr); }
