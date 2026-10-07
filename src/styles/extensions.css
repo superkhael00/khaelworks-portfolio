@@ -5295,6 +5295,45 @@ img.about__stat-badge {
   border-radius: 2px;
 }
 
+/* Dark theme. The rules above read --navy-ink (near-black in dark mode) and
+   hard-coded navy rgba values, so headings, body copy and hairlines vanished
+   on the dark card. These overrides switch only the dark theme to the same
+   light-on-navy tokens the rest of the site uses; light mode is untouched. */
+[data-theme='dark'] .legal-page__card {
+  border-color: var(--line);
+}
+[data-theme='dark'] .legal-page__back {
+  border-color: var(--line-strong);
+}
+[data-theme='dark'] .legal-page__back svg { color: var(--orange-ink); }
+[data-theme='dark'] .legal-page__back:hover {
+  background: var(--tint);
+  border-color: rgba(79, 209, 174, 0.45);
+}
+[data-theme='dark'] .legal-page__back:focus-visible,
+[data-theme='dark'] .legal-page__body a:focus-visible {
+  outline-color: var(--orange-ink);
+}
+[data-theme='dark'] .legal-page__title,
+[data-theme='dark'] .legal-page__body h2,
+[data-theme='dark'] .legal-page__body strong,
+[data-theme='dark'] .legal-page__body code {
+  color: var(--navy);
+}
+[data-theme='dark'] .legal-page__body h2 {
+  border-top-color: var(--line);
+}
+[data-theme='dark'] .legal-page__body p,
+[data-theme='dark'] .legal-page__body ul {
+  color: rgba(237, 240, 246, 0.78);
+}
+[data-theme='dark'] .legal-page__body a {
+  border-bottom-color: rgba(79, 209, 174, 0.45);
+}
+[data-theme='dark'] .legal-page__body a:hover {
+  border-bottom-color: var(--orange-ink);
+}
+
 @media (max-width: 540px) {
   .legal-page { padding: 24px 16px 48px; }
   .legal-page__card { padding: 28px 22px; border-radius: 14px; }
