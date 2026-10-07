@@ -78,11 +78,6 @@ figure.wide{grid-column:1/-1}
 figure.wide img{height:auto;max-height:520px;object-fit:cover;object-position:top}
 figcaption{padding:10px 14px;font-size:14px;color:var(--muted)}
 figcaption b{color:var(--ink)}
-dialog{border:0;padding:0;background:transparent;max-width:96vw;max-height:94vh}
-dialog::backdrop{background:rgba(0,0,0,.82)}
-dialog img{max-width:96vw;max-height:86vh;display:block;border-radius:8px;background:#fff}
-dialog p{color:#fff;text-align:center;margin:8px 0 0;font-size:14px}
-dialog .x{position:fixed;top:12px;right:16px;background:#fff;color:#000;border:0;border-radius:999px;width:36px;height:36px;font-size:20px;cursor:pointer}
 .process{counter-reset:s;display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
 @media (max-width:860px){.process{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:520px){.process{grid-template-columns:1fr 1fr}}
@@ -382,22 +377,7 @@ textarea.dinput{resize:vertical;line-height:1.5}
   </div>
 </footer>
 
-<dialog id="lb"><button class="x" aria-label="Close">×</button><img alt=""><p></p></dialog>
-<script>
-(function(){
-  var d=document.getElementById('lb'),img=d.querySelector('img'),cap=d.querySelector('p');
-  document.querySelectorAll('figure button').forEach(function(b){
-    b.addEventListener('click',function(){
-      img.src=b.getAttribute('data-full');
-      img.alt=b.querySelector('img').alt;
-      var fc=b.parentNode.querySelector('figcaption');cap.textContent=fc?fc.textContent:'';
-      if(d.showModal)d.showModal();else window.open(img.src,'_blank');
-    });
-  });
-  d.querySelector('.x').addEventListener('click',function(){d.close();});
-  d.addEventListener('click',function(e){if(e.target===d)d.close();});
-})();
-</script>
+<script src="../zoom-viewer.js" defer></script>
 <script>
 (function(){
   var $=function(id){return document.getElementById(id)};
