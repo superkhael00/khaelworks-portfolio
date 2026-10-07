@@ -247,17 +247,27 @@
   justify-content: flex-end;
   min-height: 0;
   min-width: 0;
-  margin: 0 calc(-1 * clamp(14px, 1.4vw, 24px)) calc(-1 * clamp(14px, 2vh, 24px)) 0;
+  /* An inset photograph, not a full bleed: 18px of breathing room from the
+     card's top, right and bottom edges. The sheet's own padding is a clamp,
+     so the margin trims it back to exactly 18px. */
+  --portrait-inset: 18px;
+  margin:
+    calc(var(--portrait-inset) - clamp(14px, 2vh, 24px))
+    calc(var(--portrait-inset) - clamp(14px, 1.4vw, 24px))
+    calc(var(--portrait-inset) - clamp(14px, 2vh, 24px))
+    0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 .agrid__portrait img {
   display: block;
   width: 100%;
   height: 100%;
   max-width: 100%;
-  /* A real photo, not a cut-out: fill the column and frame it. */
+  /* A real photo: fill the frame, keep head, chin and shoulders in view. */
   object-fit: cover;
-  object-position: center 20%;
-  border-radius: 0 0 var(--radius-card) 0;
+  object-position: center 12%;
 }
 
 /* ---------- Below the shell ---------- */
@@ -267,8 +277,8 @@
   .agrid__lead { max-width: none; }
   /* The corner pull is a two-column move; stacked, it just runs the art off
      the right edge of the sheet. */
-  .agrid__portrait { order: -1; height: min(38vh, 300px); margin: 0; justify-content: center; }
-  .agrid__portrait img { object-position: center 18%; border-radius: 18px; }
+  .agrid__portrait { order: -1; height: min(42vh, 340px); margin: 2px 2px 0; justify-content: center; }
+  .agrid__portrait img { object-position: center 14%; }
 }
 @media (max-width: 720px) {
   .agrid__bar { grid-template-columns: minmax(0, 1fr); }
