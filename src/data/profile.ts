@@ -61,7 +61,7 @@ export const profile: Profile = {
   displayName: { line1: 'Automate the busywork.', line2: 'Keep control.' },
   hero: {
     body: 'I build n8n and AI workflows that take repetitive invoice, bookkeeping, recruiting and lead work off small teams, with approvals and audit logs built in.',
-    portraitSrc: '/me-portrait.jpg',
+    portraitSrc: '/me-portrait-office.jpg',
     portraitAlt: 'Michael John Mendoza',
   },
   socials: [
