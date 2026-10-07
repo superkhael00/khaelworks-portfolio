@@ -10,6 +10,7 @@ import {
   MessageIcon,
 } from './RailIcons'
 import { getTheme, toggleTheme, type Theme } from '@/lib/theme'
+import { getVisitorCount, VISITOR_ENDPOINT } from '@/lib/visitors'
 import { profile } from '@/data/profile'
 
 /**
@@ -37,6 +38,17 @@ export default function Rail() {
   // The pre-paint script owns the real value; read it once mounted so the
   // button shows the icon for the action, not for the current state.
   useEffect(() => setThemeState(getTheme()), [])
+
+  // Anonymous visitor count. Hidden until it arrives, and stays hidden if the
+  // counter is slow or down.
+  const [visitors, setVisitors] = useState<number | null>(null)
+  useEffect(() => {
+    let live = true
+    getVisitorCount().then((n) => live && setVisitors(n))
+    return () => {
+      live = false
+    }
+  }, [])
 
   return (
     <aside className="rail" aria-label="Profile and site navigation">
@@ -105,6 +117,16 @@ export default function Rail() {
         </nav>
 
         <p className="rail__copy">
+          {VISITOR_ENDPOINT && (
+            // the line is always reserved, so the copyright never jumps when the number arrives
+            <span
+              className="rail__visitors"
+              data-ready={visitors !== null ? 'true' : 'false'}
+              aria-hidden={visitors === null || undefined}
+            >
+              Visitors &middot; {visitors !== null ? visitors.toLocaleString('en-US') : '0'}
+            </span>
+          )}
           &copy; {new Date().getFullYear()}
           <br />
           {profile.name}. All rights reserved.

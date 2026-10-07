@@ -261,6 +261,25 @@
     padding-left: 52px;
     text-align: left;
   }
+  /* Visitor count: one line above the copyright, same size and colour. The line
+     is reserved while it loads so nothing shifts; it fades in when it lands. */
+  .rail__visitors {
+    display: block;
+    font-variant-numeric: tabular-nums;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 300ms var(--ease-out), visibility 0s 300ms;
+  }
+  .rail__visitors[data-ready='true'] {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 300ms var(--ease-out);
+  }
+  /* On very short screens give back the counter's line from the gap above, so
+     the footer still fits without scrolling. */
+  @media (max-height: 719px) {
+    .rail__copy:has(.rail__visitors) { padding-top: clamp(18px, 3vh, 40px); }
+  }
 
   /* The rail IS the navigation up here, so the floating pill steps aside and
      the page keeps exactly one navigation surface. */
