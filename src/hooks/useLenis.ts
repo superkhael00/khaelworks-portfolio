@@ -72,7 +72,11 @@ export function useLenis() {
       // scroller. Passing a non-scrolling wrapper freezes the page.
       const panel = getScroller()
       const usesPanel = !!panel && window.innerWidth >= 1100
-      const content = panel?.firstElementChild as HTMLElement | undefined
+      // A lazy route (Services, About...) may not have rendered yet when this
+      // runs, so fall back to the panel itself. Without a content node the
+      // wrapper was silently dropped and Lenis drove the window, which does
+      // not scroll: the wheel did nothing on a direct visit to /services.
+      const content = ((panel?.firstElementChild as HTMLElement | null) ?? panel) || undefined
 
       const lenis = new Lenis({
         ...(usesPanel && content ? { wrapper: panel, content } : {}),
@@ -86,6 +90,29 @@ export function useLenis() {
         wheelMultiplier: 1,
         touchMultiplier: 1.5,
       })
+
+      // Lenis only re-measures the scroll height when the wrapper or the
+      // `content` node it was given resizes. Routes swap the panel's child
+      // (and lazy routes arrive after Lenis starts), so that node goes stale
+      // and the wheel stops at the old height (e.g. 0 on Services). Watch
+      // whatever is in the panel now and re-measure when it changes.
+      let stopWatching = () => {}
+      if (usesPanel && panel) {
+        const remeasure = () => lenis.resize()
+        const sizes = new ResizeObserver(remeasure)
+        const watchChildren = () => {
+          sizes.disconnect()
+          Array.from(panel.children).forEach((el) => sizes.observe(el))
+          remeasure()
+        }
+        const swaps = new MutationObserver(watchChildren)
+        swaps.observe(panel, { childList: true })
+        watchChildren()
+        stopWatching = () => {
+          swaps.disconnect()
+          sizes.disconnect()
+        }
+      }
 
       // Hand every Lenis scroll update to ScrollTrigger.
       lenis.on('scroll', ScrollTrigger.update)
@@ -126,6 +153,7 @@ export function useLenis() {
 
       cleanup = () => {
         document.removeEventListener('click', onAnchorClick)
+        stopWatching()
         gsap.ticker.remove(tick)
         lenis.destroy()
       }
