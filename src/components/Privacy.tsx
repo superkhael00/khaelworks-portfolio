@@ -23,7 +23,7 @@ export default function Privacy() {
         </button>
 
         <h1 className="legal-page__title">Privacy Policy</h1>
-        <p className="legal-page__updated">Last updated: 7 October 2026</p>
+        <p className="legal-page__updated">Last updated: 8 October 2026</p>
 
         <div className="legal-page__body">
           <h2>Who this covers</h2>
@@ -33,7 +33,7 @@ export default function Privacy() {
           <p>When you send the contact form, it collects your first name, last name, email address and your message. The site uses no tracking cookies and no third-party analytics. To show the visitor count, your browser keeps a random ID that is not linked to your name, email or device; once per visit it is sent to my automation server (n8n), which stores only that ID and the date it was first seen so you are not counted twice. The counter does not store your IP address. Your browser also stores a few display settings on your own device, such as light or dark theme and accessibility options; these never leave your browser.</p>
 
           <h2>How it is used</h2>
-          <p>Your message goes to my own automation server (n8n), which logs it in a private Google Sheet and sends me an email alert. I use it only to reply to you and to discuss the work you asked about. I do not sell it or add you to a mailing list. Google stores the Sheet and the email as my service provider.</p>
+          <p>Your message goes to my own automation server (n8n), which logs it in a private Google Sheet and sends me an email alert. I use it only to reply to you and to discuss the work you asked about. I do not sell it or add you to a mailing list. Google stores the Sheet and the email as my service provider. If you book a call, Google Calendar takes the booking: your name, email and answers go to my calendar, and Google sends both of us the invitation.</p>
 
           <h2>How long it is kept</h2>
           <p>I keep inquiries for up to 12 months after our last contact, then delete them. You can ask me to show, correct or delete your information at any time by emailing me. I handle personal data in line with the Philippine Data Privacy Act of 2012 (RA 10173).</p>

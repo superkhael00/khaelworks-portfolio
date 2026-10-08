@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { PaperPlaneTilt, CheckCircle, WarningCircle, EnvelopeSimple, ArrowUpRight, CaretDown } from '@/components/slab'
+import { PaperPlaneTilt, CheckCircle, WarningCircle, EnvelopeSimple, ArrowUpRight, CaretDown, CalendarCheck } from '@/components/slab'
 import { FAQS } from '@/data/faqs'
 import { profile } from '@/data/profile'
 import { readLead, submitLead, SubmitError, MAX_NAME, MAX_EMAIL, MAX_MESSAGE, type SubmitResult } from '@/lib/contact'
@@ -103,6 +103,16 @@ export default function ContactGrid() {
               )
             })}
           </ul>
+
+          {/* Prefer talking? The free discovery call, booked on Google Calendar. */}
+          <a className="cgrid__book" href={profile.bookingUrl} target="_blank" rel="noopener noreferrer">
+            <CalendarCheck size={20} weight="fill" aria-hidden="true" />
+            <span className="cgrid__book-text">
+              <b>Book a free 20-min call</b>
+              <span>Google Meet. Pick a time that suits you.</span>
+            </span>
+            <ArrowUpRight size={15} weight="bold" aria-hidden="true" className="cgrid__book-arrow" />
+          </a>
 
           <div className="cgrid__direct">
             <a className="cgrid__mail" href={`mailto:${profile.email}`}>

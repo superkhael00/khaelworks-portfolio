@@ -31,6 +31,8 @@ export type Profile = {
   /** Tooltip / screen-reader label on the verified tick next to the name. */
   verifiedLabel: string
   email: string
+  /** Google Calendar booking page for the free discovery call. */
+  bookingUrl: string
   location: string
   /** Three short proof facts shown on phones under the Home lede. */
   stats: Stat[]
@@ -51,6 +53,7 @@ export const profile: Profile = {
   avatarSrc: '/me-avatar.jpg',
   verifiedLabel: 'ID verified on Upwork',
   email: 'mjmendoza.workph@gmail.com',
+  bookingUrl: 'https://calendar.app.google/8XYdgZgPv43mEw3Q6',
   location: 'Muntinlupa City, Philippines',
   stats: [
     { value: '7+ yrs', label: 'Payroll & HR ops', Icon: Briefcase },
