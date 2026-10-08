@@ -33,6 +33,8 @@ export type Profile = {
   email: string
   /** Google Calendar booking page for the free discovery call. */
   bookingUrl: string
+  /** The same page in Google's embeddable form (Share > Website embed), shown in a popup on Contact. */
+  bookingEmbedUrl: string
   location: string
   /** Three short proof facts shown on phones under the Home lede. */
   stats: Stat[]
@@ -54,6 +56,8 @@ export const profile: Profile = {
   verifiedLabel: 'ID verified on Upwork',
   email: 'mjmendoza.workph@gmail.com',
   bookingUrl: 'https://calendar.app.google/8XYdgZgPv43mEw3Q6',
+  bookingEmbedUrl:
+    'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1ctidy51166fNePEhh6q4Y-o21SddD0eflU0RYYowmhSlZMDpUZ2KvnW-VbjzWQXx2vFOCkO1B?gv=true',
   location: 'Muntinlupa City, Philippines',
   stats: [
     { value: '7+ yrs', label: 'Payroll & HR ops', Icon: Briefcase },
