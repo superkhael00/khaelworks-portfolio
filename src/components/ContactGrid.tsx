@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from 'react'
+import { useCallback, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { PaperPlaneTilt, CheckCircle, WarningCircle, EnvelopeSimple, ArrowUpRight, CaretDown, CalendarCheck } from '@/components/slab'
 import { FAQS } from '@/data/faqs'
 import { profile } from '@/data/profile'
+import BookingModal from './BookingModal'
 import { readLead, submitLead, SubmitError, MAX_NAME, MAX_EMAIL, MAX_MESSAGE, type SubmitResult } from '@/lib/contact'
 
 /**
@@ -34,6 +35,9 @@ export default function ContactGrid() {
   const [shake, setShake] = useState(0)
   // One question open at a time so the plate never grows past the form.
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  // The booking calendar opens in a window over the page.
+  const [booking, setBooking] = useState(false)
+  const closeBooking = useCallback(() => setBooking(false), [])
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -105,7 +109,18 @@ export default function ContactGrid() {
           </ul>
 
           {/* Prefer talking? The free discovery call, booked on Google Calendar. */}
-          <a className="cgrid__book" href={profile.bookingUrl} target="_blank" rel="noopener noreferrer">
+          <a
+            className="cgrid__book"
+            href={profile.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              // a plain click opens the window; ctrl/cmd-click still opens a tab
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
+              e.preventDefault()
+              setBooking(true)
+            }}
+          >
             <CalendarCheck size={20} weight="fill" aria-hidden="true" />
             <span className="cgrid__book-text">
               <b>Book a free 20-min call</b>
@@ -215,6 +230,7 @@ export default function ContactGrid() {
           )}
         </div>
       </div>
+      {booking && <BookingModal onClose={closeBooking} />}
     </section>
   )
 }
