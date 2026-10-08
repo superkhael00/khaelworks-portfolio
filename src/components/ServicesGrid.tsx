@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { MapTrifold, Wrench, HandArrowDown, CheckCircle } from '@/components/slab'
 import type { Icon } from '@/components/slab'
 import Autopilot, { TOOLS } from '@/components/Autopilot'
+import SavingsCalculator from '@/components/SavingsCalculator'
 
 /**
  * ServicesGrid - the Services view on one glass sheet.
@@ -237,6 +238,9 @@ export default function ServicesGrid() {
             <Autopilot compact maxScale={1.08} />
           </div>
         </div>
+
+        {/* What the task costs by hand, in the visitor's own numbers. */}
+        <SavingsCalculator />
       </div>
     </section>
   )

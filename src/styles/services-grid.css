@@ -13,7 +13,7 @@
   .sgrid .pgrid__title { font-size: clamp(26px, 2vw, 40px); }
   .sgrid .pgrid__lede { font-size: clamp(13px, 0.9vw, 16px); }
   .sgrid { height: auto; }
-  .sgrid__glass { height: auto; grid-template-rows: auto auto auto; }
+  .sgrid__glass { height: auto; grid-template-rows: auto auto auto auto; }
   .sgrid__flow-main { height: clamp(380px, 50vh, 540px); }
 }
 /* The bands need more air than the Home sheet's default gap - each one is
@@ -367,4 +367,125 @@
 /* Phone type floor. */
 @media (max-width: 639px) {
   .sgrid__stage-chip, .sgrid__service-index, .sgrid__chip { font-size: 12px; }
+}
+
+/* ---------- The calculator ---------- */
+.scalc { display: flex; flex-direction: column; gap: clamp(12px, 1.6vh, 18px); min-width: 0; }
+.scalc__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 32px);
+  padding: clamp(18px, 2vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--paper);
+  box-shadow: 0 1px 1.5px rgba(6, 12, 26, 0.04), 0 10px 30px -18px rgba(6, 12, 26, 0.28);
+}
+.scalc__inputs { display: flex; flex-direction: column; gap: 20px; justify-content: center; min-width: 0; }
+.scalc__field { display: flex; flex-direction: column; gap: 8px; }
+.scalc__field-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.scalc__label { font-size: 13px; font-weight: 600; color: var(--navy); }
+.scalc__value { font-size: 14px; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scalc__value span { font-weight: 500; color: var(--muted); font-size: 12.5px; }
+.scalc__select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  padding: 11px 38px 11px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--navy);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230B7A5F' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center,
+    var(--white);
+  cursor: pointer;
+}
+.scalc__select:focus-visible,
+.scalc__range:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+.scalc__range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--orange) var(--pct), var(--tint-strong) var(--pct));
+  cursor: pointer;
+}
+.scalc__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--orange);
+  box-shadow: 0 2px 6px rgba(6, 12, 26, 0.25);
+}
+.scalc__range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--orange);
+  box-shadow: 0 2px 6px rgba(6, 12, 26, 0.25);
+}
+
+/* The result on the same dark plate as the method band. */
+.scalc__result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(18px, 1.8vw, 26px);
+  border-radius: calc(var(--radius-card) - 4px);
+  color: #EDF0F6;
+  background: linear-gradient(160deg, #0B1324 0%, #0A1F2E 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.scalc__result-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: #4FD1AE;
+  background: rgba(79, 209, 174, 0.12);
+}
+.scalc__result-label { margin: 4px 0 0; font-size: 13.5px; color: rgba(237, 240, 246, 0.7); }
+.scalc__big {
+  margin: 0;
+  font-size: clamp(34px, 3vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+.scalc__big span { font-size: 0.4em; font-weight: 600; letter-spacing: 0; color: rgba(237, 240, 246, 0.75); }
+.scalc__money { display: flex; gap: 28px; margin: 6px 0 0; }
+.scalc__money div { display: flex; flex-direction: column; gap: 2px; }
+.scalc__money dt { font-size: 12px; color: rgba(237, 240, 246, 0.6); }
+.scalc__money dd { margin: 0; font-size: 22px; font-weight: 700; color: #4FD1AE; font-variant-numeric: tabular-nums; }
+.scalc__note { margin: 6px 0 4px; font-size: 12.5px; line-height: 1.5; color: rgba(237, 240, 246, 0.62); }
+.scalc__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--orange);
+  cursor: pointer;
+  transition: filter 200ms var(--ease-out), transform 220ms var(--ease-spring);
+}
+.scalc__cta:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.scalc__cta:focus-visible { outline: 2px solid #4FD1AE; outline-offset: 2px; }
+@media (max-width: 860px) {
+  .scalc__card { grid-template-columns: minmax(0, 1fr); }
 }
