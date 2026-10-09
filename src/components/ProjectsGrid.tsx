@@ -14,6 +14,7 @@ import {
 } from './ProjectPanels'
 import { aiStack, type StackNode } from '@/data/ai-stack'
 import { useIsPhone } from '@/hooks/useMediaQuery'
+import { useDotTitle } from '@/hooks/useDotTitle'
 
 /**
  * Projects, as one viewport in Home's bento language: a glass panel of
@@ -207,6 +208,7 @@ function ProjectModal({ project, onClose, children }: { project: Project; onClos
 /* ---------- The page ---------- */
 
 export default function ProjectsGrid() {
+  const titleRef = useDotTitle<HTMLHeadingElement>()
   const [open, setOpen] = useState<Project | null>(null)
   const phone = useIsPhone()
   const [cat, setCat] = useState<Cat | 'all'>('all')
@@ -276,7 +278,7 @@ export default function ProjectsGrid() {
     <section className="pgrid" aria-labelledby="projects-title">
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">Projects</span>
-        <h1 className="pgrid__title" id="projects-title">
+        <h1 className="pgrid__title" id="projects-title" ref={titleRef}>
           Nine systems. Every one tested.
         </h1>
         <p className="pgrid__lede">Each build is modeled on a real small-business process. Open a card to see the case study, the canvas, or the tests.</p>

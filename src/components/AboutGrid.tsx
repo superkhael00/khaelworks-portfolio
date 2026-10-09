@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, MapPin, GraduationCap, Medal } from '@/components/slab'
 import { profile } from '@/data/profile'
+import { useDotTitle } from '@/hooks/useDotTitle'
 
 /**
  * AboutGrid - the About view as a fixed viewport.
@@ -42,11 +43,12 @@ const CAPABILITIES: Capability[] = [
 ]
 
 export default function AboutGrid() {
+  const titleRef = useDotTitle<HTMLHeadingElement>()
   return (
     <section className="pgrid agrid" aria-labelledby="about-title">
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">About</span>
-        <h1 className="pgrid__title" id="about-title">
+        <h1 className="pgrid__title" id="about-title" ref={titleRef}>
           {`Hi, I’m ${profile.firstName}.`}
         </h1>
         <p className="pgrid__lede">

@@ -11,12 +11,12 @@ import { useLenis, SCROLLER_ID } from '@/hooks/useLenis'
 import { useIsPhone } from '@/hooks/useMediaQuery'
 import { getPerfTier, watchFrameHealth, PERF_TIER_EVENT } from '@/lib/perf'
 
-// Lazy-load HeroCanvas so the 118KB Three.js bundle is fetched only
+// Lazy-load the contour background so the Three.js bundle is fetched only
 // when actually needed. Mobile + reduced-motion users skip the import
 // entirely - the .hero-canvas CSS fallback (background:var(--cream))
 // handles the visual baseline. PageSpeed showed Three.js had 76.6 KiB
 // of unused JS; not loading it at all on mobile is the cleaner fix.
-const HeroCanvas = lazy(() => import('@/components/HeroCanvasV2'))
+const ContourCanvas = lazy(() => import('@/components/ContourCanvas'))
 
 /**
  * The shell. It owns everything that outlives a route change: the contour
@@ -31,7 +31,8 @@ export default function App() {
   useLenis()
 
   const { pathname } = useLocation()
-  const FIXED_ROUTES = ['/', '/projects', '/about', '/contact']
+  // Home scrolls now: a full-height hero first, then the tools and the bento.
+  const FIXED_ROUTES = ['/projects', '/about', '/contact']
   const isFixed = FIXED_ROUTES.includes(pathname)
   // Below the shell breakpoint the rail is gone: a bottom tab bar navigates,
   // the QuickMenu (theme + accessibility) floats top-right on every page but
@@ -99,7 +100,7 @@ export default function App() {
       <a href={`#${SCROLLER_ID}`} className="skip-link">Skip to main content</a>
       {shouldLoadCanvas && perfTier !== 'low' && (
         <Suspense fallback={null}>
-          <HeroCanvas />
+          <ContourCanvas />
         </Suspense>
       )}
       {phone && pathname !== '/' && <QuickMenu className="qmenu--float" />}

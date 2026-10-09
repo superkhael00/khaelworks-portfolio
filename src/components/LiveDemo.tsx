@@ -32,6 +32,7 @@ import {
   type ExpenseResult,
   type Check as CheckRow,
 } from '@/lib/demo'
+import { useDotTitle } from '@/hooks/useDotTitle'
 
 /**
  * LiveDemo - the "Live demo" page. Three small versions of real builds a
@@ -157,6 +158,7 @@ type State =
   | { kind: 'error'; note: string }
 
 export default function LiveDemo() {
+  const titleRef = useDotTitle<HTMLHeadingElement>()
   const [active, setActive] = useState(0)
   const demo = DEMOS[active]
   const [texts, setTexts] = useState<string[]>(() => DEMOS.map(() => ''))
@@ -241,7 +243,7 @@ export default function LiveDemo() {
     <section className="pgrid ldemo" aria-labelledby="demo-title">
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">Live demo</span>
-        <h1 className="pgrid__title" id="demo-title">
+        <h1 className="pgrid__title" id="demo-title" ref={titleRef}>
           Try three of my builds, live.
         </h1>
         <p className="pgrid__lede">

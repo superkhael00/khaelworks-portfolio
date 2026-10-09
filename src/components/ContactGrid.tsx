@@ -5,6 +5,7 @@ import { FAQS } from '@/data/faqs'
 import { profile } from '@/data/profile'
 import BookingModal from './BookingModal'
 import { readLead, submitLead, SubmitError, MAX_NAME, MAX_EMAIL, MAX_MESSAGE, type SubmitResult } from '@/lib/contact'
+import { useDotTitle } from '@/hooks/useDotTitle'
 
 /**
  * ContactGrid - the Contact view as a fixed viewport.
@@ -29,6 +30,7 @@ const FLIGHT_MS = 650
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 
 export default function ContactGrid() {
+  const titleRef = useDotTitle<HTMLHeadingElement>()
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
   // Bumped on every failed submit so the shake replays even if the same
   // error is already showing.
@@ -64,7 +66,7 @@ export default function ContactGrid() {
     <section className="pgrid cgrid" aria-labelledby="contact-title">
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">FAQs / Contact</span>
-        <h1 className="pgrid__title" id="contact-title">
+        <h1 className="pgrid__title" id="contact-title" ref={titleRef}>
           Tell me about one process.
         </h1>
         <p className="pgrid__lede">

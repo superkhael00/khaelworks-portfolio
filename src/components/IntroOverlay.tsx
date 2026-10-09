@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { profile } from '@/data/profile'
 
 /**
@@ -29,6 +29,9 @@ import { profile } from '@/data/profile'
  */
 
 const WORDS = `${profile.displayName.line1} ${profile.displayName.line2}`.split(' ')
+/** Words in line 1. On desktop the real headline breaks after them (two
+ *  block lines beside the sculpture), so the intro copy breaks there too. */
+const LINE1_WORDS = profile.displayName.line1.split(' ').length
 
 const IGNITE_MS = 300
 const RUN_MS = 1600
@@ -126,7 +129,8 @@ export default function IntroOverlay() {
 
       // Match the landing width exactly, so scale 1 IS the final layout.
       const width = t?.width ?? Math.min(760, window.innerWidth * 0.86)
-      title.style.width = `${width}px`
+      // +1px of slack: sub-pixel rounding must not push a word to the next line.
+      title.style.width = `${width + 1}px`
       canvas.style.width = `${width}px`
       canvas.style.height = `${CANVAS_H}px`
 
@@ -362,9 +366,12 @@ export default function IntroOverlay() {
     <div className="boot" aria-hidden="true" role="presentation">
       <div className="boot__title" ref={titleRef}>
         {WORDS.map((word, i) => (
-          <span className="boot__word" key={`${word}-${i}`}>
-            <span className="boot__word-in">{word}</span>
-          </span>
+          <Fragment key={`${word}-${i}`}>
+            {i === LINE1_WORDS && <span className="boot__br" />}
+            <span className="boot__word">
+              <span className="boot__word-in">{word}</span>
+            </span>
+          </Fragment>
         ))}
       </div>
 
