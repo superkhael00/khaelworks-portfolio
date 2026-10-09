@@ -3,6 +3,7 @@ import { MapTrifold, Wrench, HandArrowDown, CheckCircle } from '@/components/sla
 import type { Icon } from '@/components/slab'
 import Autopilot, { TOOLS } from '@/components/Autopilot'
 import SavingsCalculator from '@/components/SavingsCalculator'
+import { useDotTitle } from '@/hooks/useDotTitle'
 
 /**
  * ServicesGrid - the Services view on one glass sheet.
@@ -133,11 +134,12 @@ function Marks({ logos }: { logos: string[] }) {
 /* ---------- The page ---------- */
 
 export default function ServicesGrid() {
+  const titleRef = useDotTitle<HTMLHeadingElement>()
   return (
     <section className="pgrid sgrid" aria-labelledby="services-title">
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">Services</span>
-        <h1 className="pgrid__title" id="services-title">
+        <h1 className="pgrid__title" id="services-title" ref={titleRef}>
           Automation for the back office.
         </h1>
         <p className="pgrid__lede">

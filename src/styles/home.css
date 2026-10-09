@@ -12,11 +12,10 @@
   gap: clamp(16px, 2.4vh, 34px);
 }
 
+/* Desktop Home is two screens now (hero, then tools + bento) - the layout
+   for that lives in visual-identity.css. */
 @media (min-width: 1100px) {
   .home {
-    height: 100%;
-    display: grid;
-    grid-template-rows: auto auto 1fr;
     min-height: 0;
     /* Without this a nowrap child sets the grid's min-content width and the
        whole column - marquee and workflow included - is laid out wider than

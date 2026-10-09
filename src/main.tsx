@@ -43,6 +43,7 @@ import './styles/apple.css'
 import './styles/mobile-pass.css'
 // Last: the perf tiers only ever turn things OFF, so they must win.
 import './styles/perf.css'
+import './styles/visual-identity.css'
 
 // Re-apply this tab's performance verdict before the first paint, so a
 // downgraded visitor never sees the expensive layers flash back on reload.

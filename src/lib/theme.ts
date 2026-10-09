@@ -8,8 +8,8 @@
  * paint is already the right palette. Default is LIGHT: this site's identity
  * is the cream contour page, dark is the opt-in.
  *
- * HeroCanvasV2 listens for the `themechange` event and eases its uDarkMix
- * uniform from it, so the shader crosses over on its own clock.
+ * ContourCanvas and HeroSculpture listen for the `themechange` event and ease
+ * their colours from it, so the canvases cross over on their own clock.
  */
 export type Theme = 'light' | 'dark'
 

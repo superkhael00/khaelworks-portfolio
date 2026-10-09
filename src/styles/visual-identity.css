@@ -1,0 +1,222 @@
+/* ============================================
+   VISUAL IDENTITY - dot titles, the Home hero and the sculpture
+   Loaded last so these rules win over the template layers above.
+   ============================================ */
+
+/* ---------- Dot titles (lib/dotTitle.ts) ----------
+   The heading keeps its text and its box; the glyphs go transparent only once
+   the canvas has drawn, and the canvas overhangs the box so scattered dots
+   are not clipped. */
+.dot-title { position: relative; }
+.dot-title.is-dotted { -webkit-text-fill-color: transparent; }
+.dot-title__canvas {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+
+/* ---------- Home: phone keeps one flowing line ---------- */
+@media (max-width: 1099px) {
+  .home__title { display: block; }
+  .home__line { display: inline; }
+  /* The two desktop screens dissolve: their children stay direct flex items
+     of .home, spaced by its gap exactly as before. */
+  .home__hero,
+  .home__more { display: contents; }
+}
+.boot__br { display: none; }
+
+/* ---------- Home: desktop is two screens ---------- */
+@media (min-width: 1100px) {
+  .home {
+    display: block;
+    height: auto;
+    padding: 0;
+  }
+
+  .home__hero {
+    position: relative;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: clamp(16px, 2.5vw, 48px);
+    padding: clamp(28px, 5vh, 64px) var(--panel-x) clamp(76px, 11vh, 120px);
+  }
+  .home__head { display: flex; flex-direction: column; min-width: 0; }
+  .home__headline { display: block; }
+
+  /* Two block lines now, larger than the old one-line band. The intro copy
+     (.boot__title) must match: same size, and it breaks at .boot__br. */
+  /* Scaled to the panel (viewport less the rail), so the longer line always
+     fits its column beside the sculpture - 1100px laptops included. */
+  .home__title,
+  .boot__title { font-size: clamp(32px, calc((100vw - var(--rail-w)) * 0.042), 80px); }
+  .home__title { width: fit-content; }
+  .boot__br { display: block; flex-basis: 100%; height: 0; }
+
+  .home__lede { max-width: 54ch; font-size: clamp(15px, 1.1vw, 20px); }
+
+  .home__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: clamp(20px, 3.4vh, 36px);
+  }
+  .home__ghost {
+    display: inline-flex;
+    align-items: center;
+    height: 46px;
+    padding: 0 22px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--cream) 70%, transparent);
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform var(--dur-med) var(--ease-spring), border-color var(--dur-fast) var(--ease-out);
+  }
+  .home__ghost:hover { transform: translateY(-2px); border-color: var(--orange); }
+
+  .home__stage {
+    position: relative;
+    min-width: 0;
+    height: min(70vh, 660px);
+  }
+
+  .home__scroll {
+    position: absolute;
+    left: var(--panel-x);
+    bottom: clamp(20px, 3.4vh, 36px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .home__scroll:hover { color: var(--navy); }
+  .home__scroll svg { color: var(--orange-ink); }
+  .home__scroll-mouse {
+    position: relative;
+    width: 20px;
+    height: 30px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 11px;
+  }
+  .home__scroll-mouse::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    width: 3px;
+    height: 6px;
+    margin-left: -1.5px;
+    border-radius: 2px;
+    background: var(--orange);
+    animation: home-wheel 1.8s var(--ease-out) infinite;
+  }
+
+  /* Tools + bento fill the second screen together, as they used to fill the
+     first: the bento is still laid out to the box. */
+  .home__more {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: clamp(16px, 2.4vh, 34px);
+    padding: clamp(24px, 4vh, 48px) var(--panel-x) clamp(16px, 3vh, 32px);
+    min-width: 0;
+  }
+  :root[data-a11y-text] .home__more { height: auto; }
+}
+@keyframes home-wheel {
+  0% { opacity: 0; transform: translateY(0); }
+  30% { opacity: 1; }
+  80% { opacity: 0; transform: translateY(9px); }
+  100% { opacity: 0; }
+}
+
+/* ---------- The sculpture (HeroSculpture.tsx) ---------- */
+.sculpt { position: absolute; inset: 0; }
+.sculpt__canvas {
+  position: absolute;
+  left: -4%;
+  top: -6%;
+  width: 108%;
+  height: 104%;
+  display: block;
+  cursor: grab;
+  touch-action: pan-y;
+  outline: none;
+}
+.sculpt[data-drag] .sculpt__canvas { cursor: grabbing; }
+.sculpt[data-off] { display: none; }
+.sculpt__hint {
+  position: absolute;
+  right: 6px;
+  top: 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--cream) 82%, transparent);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-out);
+}
+.sculpt__hint.is-gone { opacity: 0; }
+.sculpt__steps {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.sculpt__steps span {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--cream) 82%, transparent);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 500ms var(--ease-out), color 500ms var(--ease-out), border-color 500ms var(--ease-out);
+}
+.sculpt__steps span.is-on {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+
+/* ---------- The intro holds these back too ---------- */
+html.is-intro .home__ghost,
+html.is-intro .home__stage,
+html.is-intro .home__scroll {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.home__ghost,
+.home__stage,
+.home__scroll {
+  transition: opacity 620ms var(--ease-out), transform 760ms var(--ease-out);
+}
+.home__stage { transition-delay: 120ms; }
+.home__scroll { transition-delay: 260ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home__scroll-mouse::after { animation: none; opacity: 1; }
+  html.is-intro .home__ghost,
+  html.is-intro .home__stage,
+  html.is-intro .home__scroll { opacity: 1; transform: none; }
+}
