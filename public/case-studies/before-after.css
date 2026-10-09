@@ -1,0 +1,56 @@
+/* Shared "Before -> After, at a glance" band near the top of each case study.
+   Uses each page's own colour variables (with fallbacks for the Lead Response
+   schematic page), so it follows that page's light and dark themes. */
+.ba {
+  --ba-bg: var(--surface, var(--bg-panel, #fff));
+  --ba-ink: var(--ink, #111);
+  --ba-muted: var(--muted, var(--ink-dim, #555));
+  --ba-line: var(--line, var(--line-dim-strong, rgba(0, 0, 0, 0.14)));
+  --ba-before: var(--warn, var(--amber, #b45309));
+  --ba-after: var(--good, var(--ok, var(--green, var(--accent, #0b7a5f))));
+  margin: 28px 0 8px;
+  padding: 20px 22px;
+  border: 1px solid var(--ba-line);
+  border-radius: 14px;
+  background: var(--ba-bg);
+  color: var(--ba-ink);
+}
+.ba__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 14px; }
+.ba__eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ba-after);
+}
+.ba .ba__head h2 { margin: 0; padding: 0; border: 0; font-size: 1.15rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--ba-ink); }
+.ba .ba__head h2::before, .ba .ba__head h2::after { content: none; }
+.ba__more { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--ba-muted); text-decoration: underline; text-underline-offset: 3px; }
+.ba__more:hover { color: var(--ba-ink); }
+.ba__grid { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: stretch; }
+.ba__col { padding: 14px 16px; border-radius: 10px; border: 1px solid var(--ba-line); }
+.ba .ba__col h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.ba__col h3::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.ba__col--before h3 { color: var(--ba-before); }
+.ba__col--after h3 { color: var(--ba-after); }
+.ba__col--after { box-shadow: inset 3px 0 0 var(--ba-after); }
+.ba .ba__col ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.ba .ba__col li { font-size: 14.5px; line-height: 1.45; }
+.ba__col--before li { color: var(--ba-muted); }
+.ba__arrow { display: grid; place-items: center; font-size: 22px; font-weight: 700; color: var(--ba-after); }
+.ba .ba__result { margin: 14px 0 0; font-size: 14px; line-height: 1.5; color: var(--ba-muted); }
+.ba__result b { color: var(--ba-ink); }
+@media (max-width: 720px) {
+  .ba__grid { grid-template-columns: minmax(0, 1fr); }
+  .ba__arrow { transform: rotate(90deg); font-size: 18px; }
+  .ba__more { margin-left: 0; }
+}

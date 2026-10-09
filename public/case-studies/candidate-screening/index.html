@@ -1,4 +1,5 @@
 <title>Candidate Screening System</title>
+<link rel="stylesheet" href="../before-after.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,600;75..100,800&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
@@ -127,6 +128,16 @@ footer small{font-size:.78rem;color:var(--muted)}
   </div>
 </header>
 
+<section class="ba" aria-labelledby="ba-h">
+  <div class="ba__head"><span class="ba__eyebrow">At a glance</span><h2 id="ba-h">Before → After</h2><a class="ba__more" href="#problem">Full comparison ↓</a></div>
+  <div class="ba__grid">
+    <div class="ba__col ba__col--before"><h3>Before</h3><ul><li>Hundreds of resumes opened, read and logged by hand</li><li>Two recruiters score the same resume differently, with no record of why</li><li>Candidates wait days for any reply</li></ul></div>
+    <div class="ba__arrow" aria-hidden="true">→</div>
+    <div class="ba__col ba__col--after"><h3>After</h3><ul><li>Every resume scored against one rubric, each score backed by a quote</li><li>An acknowledgment reaches the candidate in about 20 seconds</li><li>The recruiter picks Advance, Hold or Reject; the emails and booking follow</li></ul></div>
+  </div>
+  <p class="ba__result"><b>The recruiter makes every decision.</b> Nothing rejects a person automatically.</p>
+</section>
+
 <section id="replay" aria-labelledby="replay-h">
   <span class="eyebrow">Replay a tested run</span>
   <h2 id="replay-h">One candidate, from application to booked interview</h2>
@@ -157,7 +168,7 @@ footer small{font-size:.78rem;color:var(--muted)}
   </div>
 </section>
 
-<section aria-labelledby="prob-h">
+<section id="problem" aria-labelledby="prob-h">
   <span class="eyebrow">The problem</span>
   <h2 id="prob-h">Screening by hand is slow, uneven and hard to defend</h2>
   <div class="two">
