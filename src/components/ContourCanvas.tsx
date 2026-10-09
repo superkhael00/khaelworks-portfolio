@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { getTheme } from '@/lib/theme'
+import { A11Y_EVENT, motionReduced } from '@/lib/a11y'
 import * as THREE from 'three'
 
 /**
@@ -185,7 +186,7 @@ export default function ContourCanvas() {
     let visible = document.visibilityState !== 'hidden'
     const onVisibility = () => {
       const now = document.visibilityState !== 'hidden'
-      if (now && !visible) { visible = true; lastTs = performance.now(); raf = requestAnimationFrame(loop) }
+      if (now && !visible) { visible = true; lastTs = performance.now(); if (!held) raf = requestAnimationFrame(loop) }
       else visible = now
     }
     document.addEventListener('visibilitychange', onVisibility)
@@ -196,8 +197,18 @@ export default function ContourCanvas() {
     let time = Math.random() * 100
     let lastTs = performance.now()
 
+    // The accessibility menu's Reduce motion switch: hold the current frame,
+    // pick up again when it is switched back off.
+    let held = false
+    const onA11y = () => {
+      const was = held
+      held = motionReduced()
+      if (was && !held && visible) { lastTs = performance.now(); raf = requestAnimationFrame(loop) }
+    }
+    window.addEventListener(A11Y_EVENT, onA11y)
+
     function loop(now: number = performance.now()) {
-      if (!visible) return
+      if (!visible || held) return
       raf = requestAnimationFrame(loop)
       if (now - lastTs < FRAME_INTERVAL - 1) return
       const dt = Math.min(0.05, (now - lastTs) / 1000)
@@ -219,6 +230,7 @@ export default function ContourCanvas() {
       document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('themechange', onThemeChange)
+      window.removeEventListener(A11Y_EVENT, onA11y)
       window.removeEventListener('resize', onResize)
       renderer.dispose()
       if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement)
