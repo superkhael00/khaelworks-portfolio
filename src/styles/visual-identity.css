@@ -133,7 +133,10 @@
     padding: clamp(24px, 4vh, 48px) var(--panel-x) clamp(16px, 3vh, 32px);
     min-width: 0;
   }
-  :root[data-a11y-text] .home__more { height: auto; }
+  /* Larger text (A+ / A++) zooms this section, so 100dvh already grows with
+     it. Keep the bento laid out to that box: a11y.css's height:auto lets the
+     Projects reel stack every preview and stretch the page ~3,400px. */
+  :root[data-a11y-text] .home__showcase > .bento { height: 100%; }
 }
 @keyframes home-wheel {
   0% { opacity: 0; transform: translateY(0); }

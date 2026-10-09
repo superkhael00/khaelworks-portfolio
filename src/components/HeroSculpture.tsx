@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { getTheme } from '@/lib/theme'
-import { motionReduced } from '@/lib/a11y'
+import { A11Y_EVENT, motionReduced } from '@/lib/a11y'
 import { buildSculpt } from '@/lib/sculptShapes'
 
 /**
@@ -100,7 +100,8 @@ export default function HeroSculpture({ count = 16000 }: { count?: number }) {
     const wrap = wrapRef.current
     const canvas = canvasRef.current
     if (!wrap || !canvas) return
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || motionReduced()
+    const isStill = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches || motionReduced()
+    let still = isStill()
 
     let renderer: THREE.WebGLRenderer
     try {
@@ -150,6 +151,9 @@ export default function HeroSculpture({ count = 16000 }: { count?: number }) {
       dirty = true
     }
     window.addEventListener('themechange', onTheme)
+    // The accessibility menu's Reduce motion switch applies at once, not on reload.
+    const onA11y = () => { still = isStill(); dirty = true; kick() }
+    window.addEventListener(A11Y_EVENT, onA11y)
 
     const resize = () => {
       const r = canvas.getBoundingClientRect()
@@ -283,6 +287,7 @@ export default function HeroSculpture({ count = 16000 }: { count?: number }) {
       cancelAnimationFrame(raf)
       io.disconnect(); ro.disconnect()
       window.removeEventListener('themechange', onTheme)
+      window.removeEventListener(A11Y_EVENT, onA11y)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointermove', wake)
       document.removeEventListener('pointerleave', onLeave)
