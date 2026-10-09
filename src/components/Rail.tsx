@@ -8,6 +8,7 @@ import {
   StackIcon,
   UserIcon,
   MessageIcon,
+  SparkleIcon,
 } from './RailIcons'
 import { getTheme, toggleTheme, type Theme } from '@/lib/theme'
 import { getVisitorCount, VISITOR_ENDPOINT } from '@/lib/visitors'
@@ -27,6 +28,7 @@ import { profile } from '@/data/profile'
 export const RAIL_LINKS = [
   { label: 'Home', to: '/', Icon: HomeIcon },
   { label: 'Projects', to: '/projects', Icon: FolderIcon },
+  { label: 'Live demo', to: '/demo', Icon: SparkleIcon },
   { label: 'Services', to: '/services', Icon: StackIcon },
   { label: 'About', to: '/about', Icon: UserIcon },
   { label: 'FAQs / Contact', to: '/contact', Icon: MessageIcon },

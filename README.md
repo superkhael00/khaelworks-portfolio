@@ -12,6 +12,7 @@ Built from the [BrewedOps portfolio template](https://github.com/brewed-ops/port
 | All 9 systems (names, descriptions, proof) | `src/data/ai-stack.ts` |
 | Projects page cards | `src/components/ProjectsGrid.tsx` |
 | Zapier + Excel VBA write-ups | `src/components/EarlierBuilds.tsx` |
+| Live demo page (AI inquiry triage) | `src/components/LiveDemo.tsx` (n8n workflow: KhaelWorks - Live Demo) |
 | Services, method and example workflow | `src/components/ServicesGrid.tsx`, `src/components/Autopilot.tsx` |
 | About page | `src/components/AboutGrid.tsx` |
 | FAQs | `src/data/faqs.ts` |
