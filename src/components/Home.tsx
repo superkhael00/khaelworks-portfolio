@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight } from '@/components/slab'
+import { ArrowUpRight, Sparkle } from '@/components/slab'
 import { profile } from '@/data/profile'
 import ToolsMarquee from './ToolsMarquee'
 import HomeBento from './HomeBento'
@@ -52,7 +52,13 @@ export default function Home() {
           )}
         </div>
 
-        <p className="home__lede">{hero.body}</p>
+        <p className="home__lede">
+          {hero.body}{' '}
+          <Link className="home__try" to="/demo">
+            <Sparkle size={15} weight="fill" aria-hidden="true" />
+            Try my AI live
+          </Link>
+        </p>
         {phone && <HomeStats />}
       </div>
 

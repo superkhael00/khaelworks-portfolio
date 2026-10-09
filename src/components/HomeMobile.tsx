@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { SealCheck, CaretRight, ArrowUpRight, Stack, FlowArrow, EnvelopeSimple } from '@/components/slab'
+import { SealCheck, CaretRight, ArrowUpRight, Stack, FlowArrow, EnvelopeSimple, Sparkle } from '@/components/slab'
 import { profile } from '@/data/profile'
 import QuickMenu from './QuickMenu'
 
@@ -48,10 +48,11 @@ export function HomeStats() {
 
 const TILES = [
   { n: '01', label: 'Projects', to: '/projects', title: 'Five case studies, all tested', desc: 'Invoices, recruiting, bookkeeping, CRM and leads.', img: '/work/thumb-invoice-expense.jpg' },
-  { n: '02', label: 'Services', to: '/services', title: 'What I automate for small teams', desc: 'How I work, and what you get.', Icon: Stack },
-  { n: '03', label: 'All systems', to: '/projects', title: 'Nine builds, four platforms', desc: 'n8n, Make.com, Zapier and Excel VBA.', Icon: FlowArrow, accent: true },
-  { n: '04', label: 'About', to: '/about', title: `Hi, I'm ${profile.firstName}.`, desc: 'From payroll operations to automation.', img: profile.avatarSrc },
-  { n: '05', label: 'Contact', to: '/contact', title: 'Tell me about one process', desc: 'I reply within one business day.', Icon: EnvelopeSimple },
+  { n: '02', label: 'Live demo', to: '/demo', title: 'Watch AI sort a customer message', desc: 'Paste one in and see the result in seconds.', Icon: Sparkle, accent: true },
+  { n: '03', label: 'Services', to: '/services', title: 'What I automate for small teams', desc: 'How I work, and what you get.', Icon: Stack },
+  { n: '04', label: 'All systems', to: '/projects', title: 'Nine builds, four platforms', desc: 'n8n, Make.com, Zapier and Excel VBA.', Icon: FlowArrow },
+  { n: '05', label: 'About', to: '/about', title: `Hi, I'm ${profile.firstName}.`, desc: 'From payroll operations to automation.', img: profile.avatarSrc },
+  { n: '06', label: 'Contact', to: '/contact', title: 'Tell me about one process', desc: 'I reply within one business day.', Icon: EnvelopeSimple },
 ] as const
 
 export function HomeExplore() {
