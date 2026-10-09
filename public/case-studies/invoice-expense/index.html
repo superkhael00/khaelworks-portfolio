@@ -130,6 +130,7 @@ details>div{padding-bottom:14px;display:grid;gap:10px}
 .doc span{font-size:.88rem;color:var(--muted)}
 footer{padding-top:32px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;color:var(--muted);font-size:.9rem}
 </style>
+<link rel="stylesheet" href="../before-after.css">
 </head>
 <body>
 <div class="wrap">
@@ -156,6 +157,16 @@ footer{padding-top:32px;border-top:1px solid var(--line);display:flex;flex-wrap:
   <div class="stat"><b>~12 h</b><span>staff time saved per month at 100 invoices (estimate)</span></div>
 </div>
 
+<section class="ba" aria-labelledby="ba-h">
+  <div class="ba__head"><span class="ba__eyebrow">At a glance</span><h2 id="ba-h">Before → After</h2><a class="ba__more" href="#problem">Full comparison ↓</a></div>
+  <div class="ba__grid">
+    <div class="ba__col ba__col--before"><h3>Before</h3><ul><li>Invoices sit in the inbox until the weekly catch-up</li><li>8 to 10 fields typed by hand per invoice</li><li>Resent invoices risk being paid twice</li></ul></div>
+    <div class="ba__arrow" aria-hidden="true">→</div>
+    <div class="ba__col ba__col--after"><h3>After</h3><ul><li>Picked up within a minute; AI extracts the fields and code checks every one</li><li>Duplicates are blocked against the Register</li><li>Over $500, the owner approves with one click; every outcome is logged</li></ul></div>
+  </div>
+  <p class="ba__result"><b>7–16 seconds</b> per invoice, receipt to Register (measured in testing) · <b>~12 hours</b> of staff time saved per month at 100 invoices (estimate)</p>
+</section>
+
 <section id="replay" aria-labelledby="replay-h">
   <span class="eyebrow">Replay the test run</span>
   <h2 id="replay-h">Pick an invoice and follow it through</h2>
@@ -172,7 +183,7 @@ footer{padding-top:32px;border-top:1px solid var(--line);display:flex;flex-wrap:
   </div>
 </section>
 
-<section aria-labelledby="prob-h">
+<section id="problem" aria-labelledby="prob-h">
   <span class="eyebrow">The problem</span>
   <h2 id="prob-h">Most of the delay is waiting, and most of the risk is trust</h2>
   <div class="two">
