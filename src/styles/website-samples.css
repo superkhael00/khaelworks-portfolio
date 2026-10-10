@@ -1,0 +1,142 @@
+/* ============================================
+   WEBSITE DESIGN SAMPLES - front-end concepts
+   Same objects as the rest of the site: the Projects head, Home's glass
+   sheet, paper cards with a 1px line. Three columns on desktop, so two more
+   samples slot in beside the first. The page scrolls.
+   ============================================ */
+@media (min-width: 1100px) {
+  .wsamp { height: auto; }
+}
+
+.wsamp__glass {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(14px, 1.6vw, 24px);
+  height: auto;
+}
+@media (min-width: 720px) { .wsamp__glass { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .wsamp__glass { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.wsamp__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius-card) - 6px);
+  background: var(--paper);
+  transition: transform var(--dur-med) var(--ease-spring), box-shadow var(--dur-med) var(--ease-out);
+}
+.wsamp__card:not(.wsamp__card--soon):hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Thumbnail in a small browser frame, like the project previews. */
+.wsamp__shot {
+  position: relative;
+  display: block;
+  margin: 12px 12px 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--cream);
+}
+.wsamp__chrome {
+  display: flex;
+  gap: 5px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.wsamp__chrome i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); }
+.wsamp__chrome i:first-child { background: var(--orange); }
+.wsamp__shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 700ms var(--ease-out);
+}
+.wsamp__card:hover .wsamp__shot img { transform: scale(1.03); }
+.wsamp__badge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--cream);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.wsamp__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+  padding: clamp(16px, 1.6vw, 22px);
+}
+.wsamp__tagline {
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange-ink);
+}
+.wsamp__title {
+  font-size: clamp(18px, 1.3vw, 22px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--navy);
+}
+.wsamp__desc { font-size: 14px; line-height: 1.6; color: var(--muted); }
+.wsamp__tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; }
+.wsamp__tags li {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.wsamp__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin-top: auto;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--cream);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-btn);
+  transition: transform var(--dur-med) var(--ease-spring);
+}
+.wsamp__link svg { color: var(--orange); }
+.wsamp__link:hover { transform: translateY(-2px); }
+
+/* Empty slot: a quiet dashed card until the next sample ships. */
+.wsamp__card--soon {
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 260px;
+  border-style: dashed;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+@media (max-width: 719px) { .wsamp__card--soon { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .wsamp__card, .wsamp__shot img, .wsamp__link { transition: none; }
+}
