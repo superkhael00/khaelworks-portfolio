@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LUMA Skin & Aesthetics Clinic</title>
+  <meta name="description" content="LUMA Skin & Aesthetics Clinic — a fictional Philippine aesthetic clinic website. Portfolio sample by Khael Mendoza.">
+  <meta property="og:title" content="LUMA Skin & Aesthetics Clinic">
+  <meta property="og:description" content="Calm, doctor-led skin care in Metro Manila. Fictional brand — portfolio sample by Khael Mendoza.">
+  <meta property="og:image" content="images/hero.jpg">
+  <meta name="theme-color" content="#FBF7F1">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M12 60V30a20 20 0 0 1 40 0v30z' fill='%23EBCFC6'/%3E%3Ctext x='32' y='50' font-family='Georgia' font-size='26' text-anchor='middle' fill='%233E2438'%3EL%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="demo-bar">Portfolio sample · LUMA is a fictional clinic · nothing on this page is a real offer</div>
+
+  <header class="nav" id="top">
+    <a href="#top" class="logo" aria-label="LUMA home">
+      <span class="logo-mark">LUMA</span>
+      <span class="logo-sub">skin &amp; aesthetics</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+      <span></span><span></span>
+    </button>
+    <nav id="nav-links" class="nav-links">
+      <a href="#treatments">Treatments</a>
+      <a href="#results">Results</a>
+      <a href="#quiz">Find yours</a>
+      <a href="#faq">FAQ</a>
+      <a href="#book" class="btn btn-plum btn-sm">Book a visit</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text reveal">
+        <p class="eyebrow">Doctor-led skin clinic · Bonifacio Global City</p>
+        <h1>Skin that looks like <em>yours</em>,<br>only well rested.</h1>
+        <p class="lead">Unhurried consultations, honest treatment plans, and results that build quietly over weeks — not filters.</p>
+        <div class="hero-actions">
+          <a href="#book" class="btn btn-plum">Book a consultation</a>
+          <a href="#quiz" class="btn btn-ghost">Find your treatment</a>
+        </div>
+        <ul class="hero-stats">
+          <li><strong>45 min</strong><span>first consultation</span></li>
+          <li><strong>3</strong><span>board-certified dermatologists</span></li>
+          <li><strong>₱800</strong><span>credited to your first treatment</span></li>
+        </ul>
+      </div>
+
+      <div class="hero-visual reveal delay-1">
+        <div class="blob blob-blush float-slow" aria-hidden="true"></div>
+        <div class="blob blob-sage float" aria-hidden="true"></div>
+        <figure class="arch arch-hero">
+          <img src="images/hero.jpg" alt="Smiling woman with healthy, natural skin in soft daylight" width="1672" height="941" fetchpriority="high">
+        </figure>
+        <div class="float-card float">
+          <span class="dot" aria-hidden="true"></span>
+          <div>
+            <strong>Next opening</strong>
+            <span>Tomorrow · 2:30 PM</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="ribbon" aria-hidden="true">
+      <div class="ribbon-track">
+        <span>Hydrating facials</span><i>✦</i><span>Laser rejuvenation</span><i>✦</i><span>Acne clinic</span><i>✦</i><span>Skin boosters</span><i>✦</i><span>Chemical peels</span><i>✦</i>
+        <span>Hydrating facials</span><i>✦</i><span>Laser rejuvenation</span><i>✦</i><span>Acne clinic</span><i>✦</i><span>Skin boosters</span><i>✦</i><span>Chemical peels</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- PHILOSOPHY -->
+    <section class="story">
+      <figure class="story-img reveal">
+        <img src="images/clinic-interior.jpg" alt="LUMA reception with a curved oak counter, boucle chairs and an olive tree" loading="lazy" width="1672" height="941">
+      </figure>
+      <div class="story-card reveal delay-1">
+        <p class="eyebrow">Our approach</p>
+        <h2>A slower kind <em>of clinic.</em></h2>
+        <p>Every plan at LUMA starts with a real conversation and a skin assessment with a dermatologist — never a sales pitch at the front desk. We recommend the least we can do for the result you want, and we tell you plainly when something isn't worth your money.</p>
+        <ul class="ticks">
+          <li>One doctor follows your whole plan</li>
+          <li>Prices quoted before anything starts</li>
+          <li>Progress photos taken in the same light, every visit</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TREATMENTS -->
+    <section class="treatments" id="treatments">
+      <div class="section-head reveal">
+        <p class="eyebrow">Treatments</p>
+        <h2>Four places <em>most journeys begin.</em></h2>
+        <p>Price ranges depend on the area treated and the number of sessions your doctor recommends.</p>
+      </div>
+
+      <div class="t-grid">
+        <article class="t-card reveal" id="t-facial">
+          <figure class="t-img"><img src="images/service-facial.jpg" alt="Clinician applying hydrating serum during a facial" loading="lazy" width="1672" height="941"></figure>
+          <div class="t-body">
+            <div class="t-meta"><span>60 min</span><span>No downtime</span></div>
+            <h3>Luminous Hydrating Facial</h3>
+            <p>Deep cleanse, gentle exfoliation and a layered hyaluronic infusion for tired, dehydrated skin.</p>
+            <p class="price">₱2,500 – ₱4,500 <small>per session</small></p>
+          </div>
+        </article>
+
+        <article class="t-card reveal delay-1" id="t-laser">
+          <figure class="t-img"><img src="images/service-laser.jpg" alt="Clinician performing a laser treatment on a patient wearing eye protection" loading="lazy" width="1672" height="941"></figure>
+          <div class="t-body">
+            <div class="t-meta"><span>30–45 min</span><span>1–2 days redness</span></div>
+            <h3>Pico Laser Brightening</h3>
+            <p>Targets dark spots, melasma-prone areas and uneven tone with low-heat picosecond pulses.</p>
+            <p class="price">₱6,000 – ₱15,000 <small>per session</small></p>
+          </div>
+        </article>
+
+        <article class="t-card reveal" id="t-acne">
+          <figure class="t-img"><img src="images/service-acne.jpg" alt="Dermatologist examining a young man's skin with a magnifying lamp" loading="lazy" width="1672" height="941"></figure>
+          <div class="t-body">
+            <div class="t-meta"><span>45 min</span><span>Minimal downtime</span></div>
+            <h3>Clear Skin Acne Program</h3>
+            <p>Doctor-supervised extraction, blue-light therapy and a home routine built around your triggers.</p>
+            <p class="price">₱1,800 – ₱5,500 <small>per session</small></p>
+          </div>
+        </article>
+
+        <article class="t-card reveal delay-1" id="t-glow">
+          <figure class="t-img"><img src="images/service-glow.jpg" alt="Unlabeled skincare bottles and a cream jar on warm stone" loading="lazy" width="1672" height="941"></figure>
+          <div class="t-body">
+            <div class="t-meta"><span>40 min</span><span>Slight bumps, 1 day</span></div>
+            <h3>Skin Booster Glow</h3>
+            <p>Micro-injections of hydrating boosters that restore bounce and soften fine lines from within.</p>
+            <p class="price">₱8,000 – ₱25,000 <small>per session</small></p>
+          </div>
+        </article>
+      </div>
+
+      <div class="menu reveal">
+        <h3>Also on the menu</h3>
+        <ul>
+          <li><span>Dermatologist consultation</span><i></i><b>₱800</b></li>
+          <li><span>Chemical peel</span><i></i><b>₱2,000 – ₱4,000</b></li>
+          <li><span>Microneedling</span><i></i><b>₱5,000 – ₱9,000</b></li>
+          <li><span>Underarm brightening</span><i></i><b>₱1,500 – ₱3,000</b></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="results" id="results">
+      <div class="results-text reveal">
+        <p class="eyebrow">Results</p>
+        <h2>Eight weeks, <em>same light,</em> same angle.</h2>
+        <p>Drag the handle to compare. This illustration shows the kind of change our Clear Skin Acne Program aims for: calmer breakouts, faded marks and a more even tone — with real texture left intact.</p>
+        <dl class="r-facts">
+          <div><dt>Program</dt><dd>Clear Skin Acne</dd></div>
+          <div><dt>Sessions</dt><dd>4, every 2 weeks</dd></div>
+          <div><dt>Downtime</dt><dd>Minimal</dd></div>
+        </dl>
+      </div>
+
+      <div class="results-visual reveal delay-1">
+        <div class="ba" id="ba">
+          <img src="images/after.jpg" alt="Illustration: the same woman after treatment, with clearer, more even skin" class="ba-img" width="1312" height="1199" loading="lazy">
+          <div class="ba-before">
+            <img src="images/before.jpg" alt="Illustration: woman with acne and uneven tone before treatment" width="1312" height="1199" loading="lazy">
+          </div>
+          <span class="ba-label ba-l">Before</span>
+          <span class="ba-label ba-r">After</span>
+          <div class="ba-handle" aria-hidden="true"><span>‹ ›</span></div>
+          <input type="range" min="0" max="100" value="50" class="ba-range" aria-label="Compare before and after">
+        </div>
+        <p class="caption">AI-generated illustration — not an actual patient result.</p>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="quiz-wrap" id="quiz">
+      <div class="quiz reveal">
+        <div class="quiz-intro">
+          <p class="eyebrow">Find your treatment</p>
+          <h2>Three questions. <em>One honest starting point.</em></h2>
+          <p>Your doctor confirms everything at consultation — this just helps you walk in knowing what to ask.</p>
+        </div>
+
+        <div class="quiz-panel" aria-live="polite">
+          <div class="quiz-progress"><span id="quiz-bar"></span></div>
+          <p class="quiz-step" id="quiz-step">Question 1 of 3</p>
+          <div id="quiz-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="voices">
+      <div class="section-head center reveal">
+        <p class="eyebrow">Kind words</p>
+        <h2>From the <em>treatment room.</em></h2>
+        <p class="sample-note">Sample testimonials — written for this portfolio demo, not real clients.</p>
+      </div>
+      <div class="v-grid">
+        <figure class="v-card reveal">
+          <span class="tag">Sample content</span>
+          <blockquote>“First clinic that told me I didn't need the expensive package. Three facials in, my skin finally stopped feeling tight by lunchtime.”</blockquote>
+          <figcaption><strong>Bea R.</strong><span>Taguig · Hydrating Facial</span></figcaption>
+        </figure>
+        <figure class="v-card v-offset reveal delay-1">
+          <span class="tag">Sample content</span>
+          <blockquote>“I've had acne since college. Dr. Santos explained what was actually triggering it. Two months later I go out without concealer.”</blockquote>
+          <figcaption><strong>Migs D.</strong><span>Pasig · Acne Program</span></figcaption>
+        </figure>
+        <figure class="v-card reveal delay-2">
+          <span class="tag">Sample content</span>
+          <blockquote>“Calm, spotless, and they send a reminder the day before. The laser sessions were quicker than my lunch break.”</blockquote>
+          <figcaption><strong>Carla V.</strong><span>Makati · Pico Laser</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+      <div class="faq-head reveal">
+        <p class="eyebrow">FAQ</p>
+        <h2>Before you <em>visit.</em></h2>
+        <p>Still unsure? Mention it in the booking notes and your doctor will call you first.</p>
+      </div>
+      <div class="faq-list reveal delay-1">
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Who performs the treatments?<span class="plus" aria-hidden="true"></span></button>
+          <div class="faq-a"><div><p>Every plan is created by a board-certified dermatologist. Facials are done by licensed aestheticians under the doctor's supervision; lasers and injectables are performed by the doctor.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Do I need a consultation first?<span class="plus" aria-hidden="true"></span></button>
+          <div class="faq-a"><div><p>Yes, for lasers, boosters and the acne program. The ₱800 consultation fee is credited to your first treatment if you go ahead within 30 days. Facials can be booked directly.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">How much downtime should I expect?<span class="plus" aria-hidden="true"></span></button>
+          <div class="faq-a"><div><p>Most treatments let you return to work the same day. Lasers can leave mild redness for one to two days; boosters may leave small bumps that settle within a day.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What payment methods do you accept?<span class="plus" aria-hidden="true"></span></button>
+          <div class="faq-a"><div><p>Cash, GCash, Maya, and major credit and debit cards. Installment plans are available for programs above ₱15,000 on selected cards.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Can I get treatments while pregnant or breastfeeding?<span class="plus" aria-hidden="true"></span></button>
+          <div class="faq-a"><div><p>Some gentle facials are fine, but we postpone lasers, peels and injectables. Please tell us when booking so we can prepare the right plan.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What if I need to reschedule?<span class="plus" aria-hidden="true"></span></button>
+          <div class="faq-a"><div><p>Rescheduling is free up to 24 hours before your appointment. Just reply to your confirmation message or call the clinic.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOOKING -->
+    <section class="booking" id="book">
+      <figure class="arch arch-tall booking-img reveal">
+        <img src="images/booking.jpg" alt="Quiet treatment room with a made bed and sheer curtains" loading="lazy" width="1024" height="1536">
+      </figure>
+
+      <div class="booking-card reveal delay-1">
+        <p class="eyebrow">Book a visit</p>
+        <h2>Reserve your <em>quiet hour.</em></h2>
+        <p class="muted">We'll confirm by text within one business day.</p>
+
+        <form id="booking-form" novalidate>
+          <div class="field-row">
+            <label class="field">
+              <span>Full name</span>
+              <input type="text" name="name" autocomplete="name" required placeholder="Juana Dela Cruz">
+            </label>
+            <label class="field">
+              <span>Mobile number</span>
+              <input type="tel" name="phone" autocomplete="tel" required placeholder="0917 123 4567" pattern="^(\+63|0)9\d{2}\s?\d{3}\s?\d{4}$">
+            </label>
+          </div>
+          <label class="field">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email" required placeholder="you@email.com">
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span>Treatment</span>
+              <select name="treatment" id="treatment-select" required>
+                <option value="">Choose one</option>
+                <option value="consultation">Dermatologist consultation</option>
+                <option value="facial">Luminous Hydrating Facial</option>
+                <option value="laser">Pico Laser Brightening</option>
+                <option value="acne">Clear Skin Acne Program</option>
+                <option value="glow">Skin Booster Glow</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Preferred date</span>
+              <input type="date" name="date" id="date-input" required>
+            </label>
+          </div>
+          <fieldset class="field">
+            <legend>Preferred time</legend>
+            <div class="chips">
+              <label><input type="radio" name="time" value="morning" checked><span>Morning</span></label>
+              <label><input type="radio" name="time" value="afternoon"><span>Afternoon</span></label>
+              <label><input type="radio" name="time" value="evening"><span>Evening</span></label>
+            </div>
+          </fieldset>
+          <label class="field">
+            <span>Anything we should know? <em>(optional)</em></span>
+            <textarea name="notes" rows="3" placeholder="Skin concerns, allergies, questions for the doctor…"></textarea>
+          </label>
+          <label class="check">
+            <input type="checkbox" name="consent" required>
+            <span>I agree to be contacted about this booking.</span>
+          </label>
+          <p class="form-error" id="form-error" role="alert"></p>
+          <button type="submit" class="btn btn-plum btn-block">Request appointment</button>
+        </form>
+
+        <div class="form-done" id="form-done" hidden tabindex="-1">
+          <div class="done-icon" aria-hidden="true">✦</div>
+          <h3>Portfolio demo — this form is not connected.</h3>
+          <p>Nothing was sent or stored. In a live build, this request would go to the clinic's booking inbox and trigger a confirmation text.</p>
+          <button type="button" class="btn btn-ghost" id="form-reset">Try it again</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div>
+        <span class="logo-mark light">LUMA</span>
+        <p>Skin &amp; aesthetics, slowly.</p>
+      </div>
+      <div>
+        <h4>Visit</h4>
+        <p>Bonifacio Global City, Taguig<br><em>(fictional address)</em></p>
+      </div>
+      <div>
+        <h4>Hours</h4>
+        <p>Tue – Sat · 10 AM – 8 PM<br>Sun · 11 AM – 6 PM</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <p><a href="#treatments">Treatments</a><br><a href="#quiz">Find your treatment</a><br><a href="#book">Book a visit</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p><strong>Fictional brand — portfolio sample by Khael Mendoza</strong></p>
+      <p>Images are AI-generated. Prices, people and testimonials are illustrative.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

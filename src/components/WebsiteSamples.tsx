@@ -28,6 +28,15 @@ const SAMPLES: Sample[] = [
     url: 'https://superkhael00.github.io/poly-architectural/',
     thumb: '/websites/poly-thumb.jpg',
   },
+  {
+    title: 'LUMA Skin & Aesthetics Clinic',
+    tagline: 'Aesthetic clinic website — design preview',
+    description:
+      'A calm, editorial one-page website for a (fictional) Philippine skin clinic. Visitors compare results with a before/after drag slider, take a 3-question "Find your treatment" quiz that recommends a treatment and pre-fills the booking form, and browse treatments with ₱ price ranges. Front-end preview only; the booking form is structured to connect to an automation workflow (n8n) for confirmations and reminders in a future version.',
+    tags: ['HTML/CSS/JS', 'Responsive', 'Interactive quiz', 'Before/after slider', 'Booking form design'],
+    url: '/samples/luma/',
+    thumb: '/websites/luma-thumb.jpg',
+  },
 ]
 
 const SLOTS = 3
