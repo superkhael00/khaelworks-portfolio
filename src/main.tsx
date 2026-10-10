@@ -11,6 +11,7 @@ import { restorePrefs } from '@/lib/a11y'
 const ProjectsView = lazy(() => import('@/views/ProjectsView'))
 const ServicesView = lazy(() => import('@/views/ServicesView'))
 const LiveDemo = lazy(() => import('@/components/LiveDemo'))
+const WebsiteSamples = lazy(() => import('@/components/WebsiteSamples'))
 const AboutGrid = lazy(() => import('@/components/AboutGrid'))
 const ContactGrid = lazy(() => import('@/components/ContactGrid'))
 const Privacy = lazy(() => import('@/components/Privacy'))
@@ -33,6 +34,7 @@ import './styles/services-grid.css'
 import './styles/about-grid.css'
 import './styles/contact-grid.css'
 import './styles/live-demo.css'
+import './styles/website-samples.css'
 import './styles/boot.css'
 import './styles/credentials.css'
 import './styles/mobile-app.css'
@@ -62,6 +64,7 @@ createRoot(container).render(
         <Route element={<App />}>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<ProjectsView />} />
+          <Route path="/websites" element={<WebsiteSamples />} />
           <Route path="/demo" element={<LiveDemo />} />
           <Route path="/services" element={<ServicesView />} />
           <Route path="/about" element={<AboutGrid />} />
