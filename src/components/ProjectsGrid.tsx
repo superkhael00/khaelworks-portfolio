@@ -15,6 +15,7 @@ import {
 import { aiStack, type StackNode } from '@/data/ai-stack'
 import { useIsPhone } from '@/hooks/useMediaQuery'
 import { useDotTitle } from '@/hooks/useDotTitle'
+import WorkSwitch from './WorkSwitch'
 
 /**
  * Projects, as one viewport in Home's bento language: a glass panel of
@@ -276,6 +277,7 @@ export default function ProjectsGrid() {
 
   return (
     <section className="pgrid" aria-labelledby="projects-title">
+      <WorkSwitch />
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">Projects</span>
         <h1 className="pgrid__title" id="projects-title" ref={titleRef}>

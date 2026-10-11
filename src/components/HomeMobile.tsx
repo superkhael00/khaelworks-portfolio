@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SealCheck, CaretRight, ArrowUpRight, Stack, FlowArrow, EnvelopeSimple, Sparkle } from '@/components/slab'
+import { SealCheck, CaretRight, ArrowUpRight, Stack, EnvelopeSimple, Sparkle } from '@/components/slab'
+import { getVisitorCount } from '@/lib/visitors'
 import { profile } from '@/data/profile'
 import QuickMenu from './QuickMenu'
 
@@ -15,17 +17,27 @@ import QuickMenu from './QuickMenu'
  */
 
 export function HomeProfile() {
+  // Same cached request as the desktop rail: one count per page load.
+  const [visitors, setVisitors] = useState<number | null>(null)
+  useEffect(() => {
+    let live = true
+    getVisitorCount().then((n) => live && setVisitors(n))
+    return () => { live = false }
+  }, [])
   return (
     <header className="hprofile">
-      <img className="hprofile__avatar" src={profile.avatarSrc} alt="" width={56} height={56} />
+      <Link to="/about" className="hprofile__avatar-link" aria-label={`About ${profile.firstName}`}>
+        <img className="hprofile__avatar" src={profile.avatarSrc} alt="" width={56} height={56} />
+      </Link>
       <div className="hprofile__who">
-        <span className="hprofile__name">
+        <Link to="/about" className="hprofile__name">
           {profile.name}
           <SealCheck size={16} weight="fill" className="hprofile__verified" aria-label={profile.verifiedLabel} />
-        </span>
+        </Link>
         <span className="hprofile__handle">
           {profile.handle} · {profile.role}
         </span>
+        {visitors !== null && <span className="hprofile__visits">Visitors · {visitors.toLocaleString('en-US')}</span>}
       </div>
       <QuickMenu className="hprofile__menu" />
     </header>
@@ -50,7 +62,7 @@ const TILES = [
   { n: '01', label: 'Projects', to: '/projects', title: 'Five case studies, all tested', desc: 'Invoices, recruiting, bookkeeping, CRM and leads.', img: '/work/thumb-invoice-expense.jpg' },
   { n: '02', label: 'Live demo', to: '/demo', title: 'Watch AI sort a customer message', desc: 'Paste one in and see the result in seconds.', Icon: Sparkle, accent: true },
   { n: '03', label: 'Services', to: '/services', title: 'What I automate for small teams', desc: 'How I work, and what you get.', Icon: Stack },
-  { n: '04', label: 'All systems', to: '/projects', title: 'Nine builds, four platforms', desc: 'n8n, Make.com, Zapier and Excel VBA.', Icon: FlowArrow },
+  { n: '04', label: 'Websites', to: '/websites', title: 'Website design samples', desc: 'Front-end concepts, live on the web.', img: '/websites/poly-thumb.jpg' },
   { n: '05', label: 'About', to: '/about', title: `Hi, I'm ${profile.firstName}.`, desc: 'From payroll operations to automation.', img: profile.avatarSrc },
   { n: '06', label: 'Contact', to: '/contact', title: 'Tell me about one process', desc: 'I reply within one business day.', Icon: EnvelopeSimple },
 ] as const
