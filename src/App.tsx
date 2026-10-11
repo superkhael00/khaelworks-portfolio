@@ -12,10 +12,9 @@ import { useIsPhone } from '@/hooks/useMediaQuery'
 import { getPerfTier, watchFrameHealth, PERF_TIER_EVENT } from '@/lib/perf'
 
 // Lazy-load the contour background so the Three.js bundle is fetched only
-// when actually needed. Mobile + reduced-motion users skip the import
-// entirely - the .hero-canvas CSS fallback (background:var(--cream))
-// handles the visual baseline. PageSpeed showed Three.js had 76.6 KiB
-// of unused JS; not loading it at all on mobile is the cleaner fix.
+// when actually needed, after the page has loaded. Reduced-motion users skip
+// the import entirely - the .hero-canvas CSS fallback (background:var(--cream))
+// handles the visual baseline.
 const ContourCanvas = lazy(() => import('@/components/ContourCanvas'))
 
 /**
@@ -72,8 +71,9 @@ export default function App() {
     if (typeof window === 'undefined') return
     const reduced =
       window.matchMedia('(prefers-reduced-motion: reduce)').matches || motionReduced()
-    const isMobile = window.matchMedia('(pointer: coarse) and (hover: none)').matches
-    if (reduced || isMobile) return
+    // Phones and tablets get the background too (ContourCanvas runs it at
+    // 20fps there); the perf tier below still removes it on weak devices.
+    if (reduced) return
     // Defer the Three.js fetch to idle time so it does not compete with
     // initial render / LCP. Falls back to setTimeout if requestIdleCallback
     // is unavailable (Safari).

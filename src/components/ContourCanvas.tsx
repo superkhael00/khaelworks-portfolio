@@ -126,11 +126,10 @@ export default function ContourCanvas() {
     if (!el) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isTouch =
-      'ontouchstart' in window ||
-      window.matchMedia('(pointer: coarse)').matches ||
-      navigator.maxTouchPoints > 0
-    if (reduced || isTouch) return
+    // Phones and tablets get it too, at a gentler frame rate. Weak devices
+    // still lose it through the perf tier (App.tsx removes it on 'low').
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0
+    if (reduced) return
 
     const scene = new THREE.Scene()
     const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
@@ -139,7 +138,11 @@ export default function ContourCanvas() {
     // ratio cost scroll smoothness on HiDPI laptops. Step down, never up.
     const pr = Math.min(window.devicePixelRatio, 1)
     renderer.setPixelRatio(pr)
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize(window.innerWidth, window.innerHeight, false)
+    // CSS keeps the canvas full-screen, so a phone's address bar sliding in
+    // and out only stretches it slightly instead of forcing a re-render.
+    renderer.domElement.style.width = '100%'
+    renderer.domElement.style.height = '100%'
     el.appendChild(renderer.domElement)
 
     const dark = { value: getTheme() === 'dark' ? 1 : 0 }
@@ -167,18 +170,25 @@ export default function ContourCanvas() {
     // Ripples: one every 160ms while the pointer moves, oldest slot reused.
     let next = 0
     let lastDrop = 0
-    const onMove = (e: MouseEvent) => {
+    const onMove = (e: PointerEvent) => {
       const now = performance.now()
       if (now - lastDrop < 160) return
       lastDrop = now
       rip[next].set(e.clientX, window.innerHeight - e.clientY, 0, 1)
       next = (next + 1) % RIPPLES
     }
-    window.addEventListener('mousemove', onMove, { passive: true })
+    // Pointer events: a mouse moving, or a finger touching and dragging.
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onMove, { passive: true })
 
+    let sizeW = window.innerWidth, sizeH = window.innerHeight
     const onResize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight)
-      mat.uniforms.uRes.value.set(window.innerWidth, window.innerHeight)
+      const w = window.innerWidth, h = window.innerHeight
+      // Ignore the address bar showing/hiding while scrolling on a phone.
+      if (w === sizeW && Math.abs(h - sizeH) < 160) return
+      sizeW = w; sizeH = h
+      renderer.setSize(w, h, false)
+      mat.uniforms.uRes.value.set(w, h)
     }
     window.addEventListener('resize', onResize)
 
@@ -191,7 +201,7 @@ export default function ContourCanvas() {
     }
     document.addEventListener('visibilitychange', onVisibility)
 
-    const FRAME_INTERVAL = 1000 / 30
+    const FRAME_INTERVAL = 1000 / (isTouch ? 20 : 30)
     const DRIFT_PER_SECOND = 1.0
     const DARK_PER_SECOND = 7.0
     let time = Math.random() * 100
@@ -228,7 +238,8 @@ export default function ContourCanvas() {
     return () => {
       cancelAnimationFrame(raf)
       document.removeEventListener('visibilitychange', onVisibility)
-      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onMove)
       window.removeEventListener('themechange', onThemeChange)
       window.removeEventListener(A11Y_EVENT, onA11y)
       window.removeEventListener('resize', onResize)
