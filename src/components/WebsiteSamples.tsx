@@ -38,6 +38,15 @@ const SAMPLES: Sample[] = [
     url: '/samples/luma/',
     thumb: '/websites/luma-thumb.jpg',
   },
+  {
+    title: 'HAVEN Realty',
+    tagline: 'Real estate brokerage website — design preview',
+    description:
+      'A bold, dark one-page website for a (fictional) Philippine real estate brokerage. Visitors filter listings live by price, bedrooms and city, run an affordability calculator that applies their budget to the listings, and open a property gallery to request a viewing. Includes a draggable hero image, swipeable carousel and 3D tilt cards. Front-end preview only; the viewing form is structured to connect to an automation workflow (n8n) in a future version.',
+    tags: ['HTML/CSS/JS', 'Responsive', 'Live listing filters', 'Affordability calculator', 'WebGL effects'],
+    url: 'https://superkhael00.github.io/haven-realty/',
+    thumb: '/websites/haven-thumb.jpg',
+  },
 ]
 
 const SLOTS = 3
