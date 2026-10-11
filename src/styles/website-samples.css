@@ -140,3 +140,27 @@
 @media (prefers-reduced-motion: reduce) {
   .wsamp__card, .wsamp__shot img, .wsamp__link { transition: none; }
 }
+
+/* ---------- Phone/tablet: Automations | Websites switch (WorkSwitch.tsx) ---------- */
+.wswitch {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+}
+.wswitch__btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.wswitch__btn[aria-current='page'] { background: var(--navy); color: var(--cream); }
+
+/* Phone Home header: name links to About; visitor count under the handle. */
+.hprofile__avatar-link { display: block; flex-shrink: 0; border-radius: 50%; }
+a.hprofile__name { color: inherit; text-decoration: none; }
+.hprofile__visits { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }

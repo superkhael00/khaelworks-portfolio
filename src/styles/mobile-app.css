@@ -72,9 +72,11 @@
     transition: color var(--dur-fast) var(--ease-out), transform 100ms var(--ease-out);
   }
   .tabbar__tab:active { transform: scale(0.94); }
-  .tabbar__tab[aria-current='page'] { color: var(--navy); }
+  .tabbar__tab[aria-current='page'],
+  .tabbar__tab.is-active { color: var(--navy); }
   /* Not the raised button: its envelope keeps its own ink on the orange. */
-  .tabbar__tab[aria-current='page']:not(.tabbar__tab--primary) svg { color: var(--orange-ink); }
+  .tabbar__tab[aria-current='page']:not(.tabbar__tab--primary) svg,
+  .tabbar__tab.is-active:not(.tabbar__tab--primary) svg { color: var(--orange-ink); }
   .tabbar__tab:focus-visible { outline: 2px solid var(--orange); outline-offset: -6px; }
 
   /* The pill: one mark that travels between tabs (TabBar.tsx places and
