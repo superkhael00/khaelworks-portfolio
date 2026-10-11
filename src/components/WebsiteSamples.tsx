@@ -5,9 +5,9 @@ import WorkSwitch from './WorkSwitch'
 /**
  * Website Design Samples - front-end concepts, shown after the automation
  * projects. One card per sample, driven by SAMPLES below: to add a site,
- * copy an entry and drop its thumbnail in public/websites/. Empty slots up to
- * three show a quiet "next sample" placeholder so the grid never looks half
- * built.
+ * copy an entry and drop its thumbnail in public/websites/. Empty slots that
+ * complete the last row of three show a quiet "next sample" placeholder so
+ * the grid never looks half built.
  */
 
 type Sample = {
@@ -47,13 +47,23 @@ const SAMPLES: Sample[] = [
     url: 'https://superkhael00.github.io/haven-realty/',
     thumb: '/websites/haven-thumb.jpg',
   },
+  {
+    title: 'TALA Highland Glamping',
+    tagline: 'Glamping resort website — design preview',
+    description:
+      'A cinematic one-page website for a (fictional) glamping resort in the Philippine highlands. A Day/Night toggle crossfades the video hero from starry night to sunrise and shifts the whole palette. A stay estimator shows a live ₱ total, and "Book this stay" sends it into the inquiry form. Front-end preview only; the form is structured to connect to an automation workflow (n8n) in a future version.',
+    tags: ['HTML/CSS/JS', 'Responsive', 'Video hero', 'Day/Night theme', 'Live price estimator'],
+    url: 'https://superkhael00.github.io/tala-glamping/',
+    thumb: '/websites/tala-thumb.jpg',
+  },
 ]
 
 const SLOTS = 3
 
 export default function WebsiteSamples() {
   const titleRef = useDotTitle<HTMLHeadingElement>()
-  const empty = Math.max(0, SLOTS - SAMPLES.length)
+  // Fill out the last row of three with "next sample" placeholders
+  const empty = (SLOTS - (SAMPLES.length % SLOTS)) % SLOTS
 
   return (
     <section className="pgrid wsamp" aria-labelledby="websites-title">
