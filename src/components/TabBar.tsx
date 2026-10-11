@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { House, FolderOpen, EnvelopeSimple, Stack, User } from '@/components/slab'
+import { House, FolderOpen, EnvelopeSimple, Stack, Sparkle } from '@/components/slab'
 import { motionReduced } from '@/lib/a11y'
 
 /**
@@ -22,7 +22,7 @@ const TABS = [
   { label: 'Work', to: '/projects', Icon: FolderOpen },
   { label: 'Contact', to: '/contact', Icon: EnvelopeSimple, primary: true },
   { label: 'Services', to: '/services', Icon: Stack },
-  { label: 'About', to: '/about', Icon: User },
+  { label: 'Demo', to: '/demo', Icon: Sparkle },
 ] as const
 
 /** Scroll distance in one direction before the bar reacts, and the band at the
@@ -49,14 +49,14 @@ export default function TabBar() {
   )
 
   // Put the pill on the active tab; travel there when it was already showing.
-  // Reads the DOM (aria-current), so it needs no props and never goes stale.
+  // Reads the DOM (.is-active), so it needs no props and never goes stale.
   const place = useCallback(
     (animate: boolean) => {
       const nav = navRef.current
       const pill = pillRef.current
       if (!nav || !pill) return
       const tab = nav.querySelector<HTMLElement>(
-        '.tabbar__tab[aria-current="page"]:not(.tabbar__tab--primary)',
+        '.tabbar__tab.is-active:not(.tabbar__tab--primary)',
       )
       if (!tab) {
         pill.dataset.off = ''
@@ -141,16 +141,20 @@ export default function TabBar() {
       <span className="tabbar__pill" ref={pillRef} aria-hidden="true" data-off="" />
       {TABS.map(({ label, to, Icon, ...rest }) => {
         const primary = 'primary' in rest && rest.primary
+        // Work covers both portfolios: automations and website samples.
+        const also = to === '/projects' && pathname.startsWith('/websites')
         return (
           <NavLink
             key={to}
             to={to}
             end={to === '/'}
-            className={`tabbar__tab${primary ? ' tabbar__tab--primary' : ''}`}
+            className={({ isActive }) => `tabbar__tab${primary ? ' tabbar__tab--primary' : ''}${isActive || also ? ' is-active' : ''}`}
             aria-label={primary ? label : undefined}
           >
             {/* Outline at rest, filled when selected - the iOS tab convention. */}
-            {({ isActive }) =>
+            {({ isActive: own }) => {
+              const isActive = own || also
+              return (
               primary ? (
                 <span className="tabbar__fab">
                   <Icon size={24} weight="bold" aria-hidden="true" />
@@ -161,7 +165,7 @@ export default function TabBar() {
                   <span className="tabbar__label">{label}</span>
                 </>
               )
-            }
+            )}}
           </NavLink>
         )
       })}

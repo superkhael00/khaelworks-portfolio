@@ -1,5 +1,6 @@
 import { ArrowUpRight, Browser } from '@/components/slab'
 import { useDotTitle } from '@/hooks/useDotTitle'
+import WorkSwitch from './WorkSwitch'
 
 /**
  * Website Design Samples - front-end concepts, shown after the automation
@@ -38,6 +39,7 @@ export default function WebsiteSamples() {
 
   return (
     <section className="pgrid wsamp" aria-labelledby="websites-title">
+      <WorkSwitch />
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">Websites</span>
         <h1 className="pgrid__title" id="websites-title" ref={titleRef}>
