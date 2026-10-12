@@ -3,6 +3,7 @@ import { MapTrifold, Wrench, HandArrowDown, CheckCircle } from '@/components/sla
 import type { Icon } from '@/components/slab'
 import Autopilot, { TOOLS } from '@/components/Autopilot'
 import SavingsCalculator from '@/components/SavingsCalculator'
+import TailorProcess from '@/components/TailorProcess'
 import { useDotTitle } from '@/hooks/useDotTitle'
 
 /**
@@ -215,6 +216,9 @@ export default function ServicesGrid() {
             ))}
           </ul>
         </div>
+
+        {/* How I work, told as a tailor's process - below the service cards. */}
+        <TailorProcess />
 
         {/* The live workflow. Its caption and the tool chips sit in a header
             above the window, so the canvas gets the whole glass width. */}
