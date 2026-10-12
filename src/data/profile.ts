@@ -67,7 +67,7 @@ export const profile: Profile = {
   // The intro types this line, then flies it into the Home headline.
   displayName: { line1: 'Automate the busywork.', line2: 'Keep control.' },
   hero: {
-    body: 'I build n8n and AI workflows that take repetitive invoice, bookkeeping, recruiting and lead work off small teams, with approvals and audit logs built in.',
+    body: 'I automate repetitive business processes, from simple tasks to complete systems, and build websites that connect to them. Using n8n, Make, Zapier, or GoHighLevel, I build reliable workflows with validation, approvals, error handling, and audit logs, so your team saves time and problems get caught early.',
     portraitSrc: '/me-portrait-office.jpg',
     portraitAlt: 'Michael John Mendoza',
   },

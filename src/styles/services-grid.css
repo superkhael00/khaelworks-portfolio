@@ -7,6 +7,8 @@
 /* The workflow section carries data-reveal for the scrolling views; nothing
    observes it here, so it would sit at opacity 0 forever. */
 .sgrid [data-reveal] { opacity: 1 !important; transform: none !important; }
+/* The intro paragraph is several sentences; keep it to a readable line length. */
+.sgrid .pgrid__lede { max-width: 78ch; }
 
 @media (min-width: 1100px) {
   .sgrid { padding-top: clamp(20px, 3vh, 34px); gap: clamp(14px, 2vh, 24px); }
