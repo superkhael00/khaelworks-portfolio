@@ -1,8 +1,7 @@
-import type { CSSProperties } from 'react'
-import { MapTrifold, Wrench, HandArrowDown, CheckCircle } from '@/components/slab'
-import type { Icon } from '@/components/slab'
+import { CheckCircle } from '@/components/slab'
 import Autopilot, { TOOLS } from '@/components/Autopilot'
 import SavingsCalculator from '@/components/SavingsCalculator'
+import TailorProcess from '@/components/TailorProcess'
 import { useDotTitle } from '@/hooks/useDotTitle'
 
 /**
@@ -17,40 +16,6 @@ import { useDotTitle } from '@/hooks/useDotTitle'
  *
  * Copy matches the resume and the case studies.
  */
-
-/* ---------- The method ---------- */
-
-type Stage = {
-  index: string
-  label: string
-  body: string
-  Icon: Icon
-  chips: string[]
-}
-
-const STAGES: Stage[] = [
-  {
-    index: '01',
-    label: 'Map it',
-    body: 'I map how the work runs today and agree with you what should stay manual.',
-    Icon: MapTrifold,
-    chips: ['Current process', 'Rules', 'Exceptions', 'Approvals'],
-  },
-  {
-    index: '02',
-    label: 'Build and test it',
-    body: 'I build it in n8n, Make.com or Zapier and test it against real edge cases.',
-    Icon: Wrench,
-    chips: ['Validation', 'Error alerts', 'Audit log'],
-  },
-  {
-    index: '03',
-    label: 'Hand it over',
-    body: 'You get a working system, test results and a short guide your team can follow.',
-    Icon: HandArrowDown,
-    chips: ['Owner SOP', 'System docs', 'Test results'],
-  },
-]
 
 /* ---------- The services ---------- */
 
@@ -148,43 +113,6 @@ export default function ServicesGrid() {
       </header>
 
       <div className="home__glass sgrid__glass">
-        {/* One dark plate, the headline on the left, the three stages wired
-            in order on the right with a signal running them. */}
-        <div className="sgrid__method" aria-labelledby="method-title">
-          <div className="sgrid__method-copy">
-            <span className="sgrid__method-eyebrow">How I work</span>
-            <h2 className="sgrid__method-title" id="method-title">
-              Map. Build. Hand over.
-              <br />
-              <span>The same three steps on every build.</span>
-            </h2>
-            <p className="sgrid__method-sub">
-              AI does the reading and sorting. Rules and people make the decisions.
-            </p>
-          </div>
-
-          <ol className="sgrid__stages" role="list">
-            {STAGES.map((s, i) => {
-              const StageIcon = s.Icon
-              return (
-                <li key={s.index} className="sgrid__stage" style={{ '--i': i } as CSSProperties}>
-                  <span className="sgrid__stage-ghost" aria-hidden="true">{s.index}</span>
-                  <span className="sgrid__stage-icon" aria-hidden="true">
-                    <StageIcon size={22} weight="duotone" />
-                  </span>
-                  <h3 className="sgrid__stage-label">{s.label}.</h3>
-                  <p className="sgrid__stage-body">{s.body}</p>
-                  <ul className="sgrid__stage-chips" role="list" aria-label={`${s.label} touches`}>
-                    {s.chips.map((c) => (
-                      <li key={c} className="sgrid__stage-chip">{c}</li>
-                    ))}
-                  </ul>
-                </li>
-              )
-            })}
-          </ol>
-        </div>
-
         {/* Five cards, each carrying the marks of what it is built with. */}
         <div className="sgrid__offers">
           <div className="sgrid__offers-head">
@@ -215,6 +143,9 @@ export default function ServicesGrid() {
             ))}
           </ul>
         </div>
+
+        {/* How I work, told as a tailor's process - below the service cards. */}
+        <TailorProcess />
 
         {/* The live workflow. Its caption and the tool chips sit in a header
             above the window, so the canvas gets the whole glass width. */}

@@ -1,0 +1,240 @@
+/* ============================================
+   HOW I WORK - the tailor's process (TailorProcess.tsx)
+   A gold measuring tape unrolls; each number it passes drops a pin and
+   raises that step's card. --p (0..1) is the tape's progress, written by
+   the component; .is-shown marks a revealed step.
+   ============================================ */
+.tailor {
+  --gold: #d9b44a;
+  --gold-ink: #3a2c06;        /* numbers and ticks printed on the tape */
+  --tape: 34px;               /* tape thickness */
+  --pin: 26px;                /* pin length */
+  --p: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.6vh, 28px);
+  padding: clamp(20px, 2.4vw, 36px);
+  border-radius: 20px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--line);
+  min-width: 0;
+}
+
+/* ---------- Head ---------- */
+.tailor__head { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.tailor__eyebrow {
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--orange-ink);
+}
+.tailor__title {
+  font-size: clamp(24px, 2.1vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--navy);
+}
+.tailor__intro { max-width: 60ch; font-size: clamp(14px, 1vw, 17px); line-height: 1.6; color: var(--muted); }
+
+/* ---------- Track: tape + steps ---------- */
+.tailor__track { position: relative; min-width: 0; }
+.tailor__tape {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--tape);
+  border-radius: 4px;
+  /* Ticks: fine every 8px, longer every 40px, printed along the top edge. */
+  background:
+    repeating-linear-gradient(90deg, var(--gold-ink) 0 1px, transparent 1px 40px) top left / 100% 13px no-repeat,
+    repeating-linear-gradient(90deg, var(--gold-ink) 0 1px, transparent 1px 8px) top left / 100% 7px no-repeat,
+    linear-gradient(180deg, #e6c662, var(--gold) 55%, #c9a23a);
+  box-shadow: 0 6px 14px -8px rgba(58, 44, 6, 0.6), inset 0 -1px 0 rgba(58, 44, 6, 0.25);
+  transform: scaleX(var(--p));
+  transform-origin: left center;
+  opacity: 0.94;
+}
+/* The roll: a small spool riding the tape's leading edge while it unrolls. */
+.tailor__tape::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  width: 20px;
+  height: 40px;
+  margin-top: -20px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #c9a23a, #f0d77d 45%, #b88f2c);
+  box-shadow: 0 4px 10px -4px rgba(58, 44, 6, 0.6);
+  transform: scaleX(calc(1 / max(var(--p), 0.02)));
+  transform-origin: right center;
+  transition: opacity 400ms var(--ease-out);
+}
+.tailor[data-played] .tailor__tape::after { opacity: 0; }
+
+.tailor__steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(10px, 1.1vw, 18px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tailor__step { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+
+/* Number, printed on the tape over its step. */
+.tailor__num {
+  display: grid;
+  place-items: center;
+  height: var(--tape);
+  padding-top: 9px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-ink);
+  opacity: 0;
+  transition: opacity 260ms var(--ease-out);
+}
+
+/* Pin: a round head on a short shaft, dropping from the tape to the card. */
+.tailor__pin {
+  position: relative;
+  width: 2px;
+  height: var(--pin);
+  background: linear-gradient(180deg, var(--muted), transparent);
+  opacity: 0;
+  transform: translateY(-14px);
+  transition: opacity 260ms var(--ease-out), transform 420ms var(--ease-spring);
+}
+.tailor__pin::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f3dc8a, var(--gold) 55%, #a8811f);
+  box-shadow: 0 2px 4px rgba(58, 44, 6, 0.4);
+}
+
+/* Card: dashed until its step is shown, then gold. */
+.tailor__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  flex: 1 1 auto;
+  padding: clamp(14px, 1.2vw, 18px);
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 16px;
+  background: var(--cream);
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 560ms var(--ease-out),
+    border-color 600ms var(--ease-out) 120ms,
+    box-shadow 600ms var(--ease-out) 120ms;
+}
+.tailor__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  color: #8a6a12;
+}
+.tailor__step-title { font-size: clamp(15px, 1.05vw, 18px); font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; color: var(--navy); }
+.tailor__lead { font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--navy); }
+.tailor__body { font-size: 13.5px; line-height: 1.55; color: var(--muted); }
+
+.tailor__step.is-shown .tailor__num { opacity: 1; }
+.tailor__step.is-shown .tailor__pin { opacity: 1; transform: none; }
+.tailor__step.is-shown .tailor__card {
+  opacity: 1;
+  transform: none;
+  border-color: var(--gold);
+  box-shadow: 0 14px 30px -22px rgba(138, 106, 18, 0.55);
+}
+
+/* ---------- Closing line ---------- */
+.tailor__close {
+  margin-top: 4px;
+  text-align: center;
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.5;
+  color: var(--navy);
+}
+.tailor__divider {
+  width: min(520px, 100%);
+  margin: 0 auto;
+  border: 0;
+  border-top: 1.5px dashed var(--line-strong);
+}
+
+/* ---------- Dark theme ---------- */
+[data-theme='dark'] .tailor__card { background: color-mix(in srgb, var(--paper) 70%, #000); }
+[data-theme='dark'] .tailor__icon { color: #f0d77d; }
+[data-theme='dark'] .tailor__pin { background: linear-gradient(180deg, rgba(237, 240, 246, 0.6), transparent); }
+[data-theme='dark'] .tailor__step.is-shown .tailor__card { box-shadow: 0 14px 30px -18px rgba(217, 180, 74, 0.35); }
+
+/* ---------- Phones and tablets: a vertical tape down the left ---------- */
+@media (max-width: 899px) {
+  .tailor__tape {
+    right: auto;
+    bottom: 0;
+    width: var(--tape);
+    height: auto;
+    background:
+      repeating-linear-gradient(180deg, var(--gold-ink) 0 1px, transparent 1px 40px) top left / 13px 100% no-repeat,
+      repeating-linear-gradient(180deg, var(--gold-ink) 0 1px, transparent 1px 8px) top left / 7px 100% no-repeat,
+      linear-gradient(90deg, #e6c662, var(--gold) 55%, #c9a23a);
+    transform: scaleY(var(--p));
+    transform-origin: center top;
+  }
+  .tailor__tape::after {
+    right: 50%;
+    top: auto;
+    bottom: -10px;
+    width: 40px;
+    height: 20px;
+    margin: 0 -20px 0 0;
+    background: linear-gradient(180deg, #c9a23a, #f0d77d 45%, #b88f2c);
+    transform: scaleY(calc(1 / max(var(--p), 0.02)));
+    transform-origin: center bottom;
+  }
+  .tailor__steps { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .tailor__step {
+    display: grid;
+    grid-template-columns: var(--tape) var(--pin) minmax(0, 1fr);
+    align-items: start;
+  }
+  .tailor__num { height: auto; padding: 18px 0 0 9px; justify-content: start; }
+  .tailor__pin {
+    width: var(--pin);
+    height: 2px;
+    margin-top: 26px;
+    background: linear-gradient(90deg, var(--muted), transparent);
+    transform: translateX(-12px);
+  }
+  .tailor__pin::before { left: -5px; top: 50%; margin: -5.5px 0 0 0; }
+  [data-theme='dark'] .tailor__pin { background: linear-gradient(90deg, rgba(237, 240, 246, 0.6), transparent); }
+  .tailor__card { transform: translateX(16px); }
+}
+
+/* ---------- Reduced motion: everything in place, no movement ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .tailor__num, .tailor__pin, .tailor__card { transition: none; }
+}
+:root[data-a11y-motion='true'] .tailor__num,
+:root[data-a11y-motion='true'] .tailor__pin,
+:root[data-a11y-motion='true'] .tailor__card { transition: none; }
