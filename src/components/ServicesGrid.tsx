@@ -108,7 +108,7 @@ export default function ServicesGrid() {
           Automation for the back office.
         </h1>
         <p className="pgrid__lede">
-          I automate the repetitive parts of finance, HR, recruiting and sales operations. People keep the decisions.
+          I automate repetitive business processes and build websites that connect with your workflows. From simple task automation to complete business systems, I choose the tools that best fit your needs, including n8n, Make, Zapier, and GoHighLevel. Every workflow is built with reliability in mind, including validation, approvals, error handling, audit logs, and testing, so problems can be detected, managed, and addressed instead of failing silently.
         </p>
       </header>
 
