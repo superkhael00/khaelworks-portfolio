@@ -221,6 +221,41 @@
 :root[data-a11y-text] .shell__panel[data-fixed='true'] { overflow-y: auto; }
 :root[data-a11y-text] .home__showcase > .bento { height: auto; }
 
+@media (min-width: 1100px) {
+  /* The rail is a fixed 312px column. Zooming what it contains without
+     widening it pushed the social row past both edges, so the column grows
+     by the same factor and the zoomed content keeps its original room. */
+  :root[data-a11y-text='lg'] { --rail-w: calc(312px * 1.12); }
+  :root[data-a11y-text='xl'] { --rail-w: calc(312px * 1.25); }
+
+  /* Projects, About and Contact are laid out to exactly one panel height:
+     the glass sheet is height:100% and its copy is centred inside it. Under
+     zoom the copy outgrew that locked box and spilled out of the top and the
+     bottom of the sheet. With larger text on, the sheet sizes to its content
+     instead, and the panel (already allowed to scroll above) takes the rest. */
+  :root[data-a11y-text] .pgrid {
+    height: auto;
+    min-height: 100%;
+    grid-template-rows: auto auto;
+  }
+  :root[data-a11y-text] .pgrid__glass,
+  :root[data-a11y-text] .agrid__glass,
+  :root[data-a11y-text] .cgrid__glass,
+  :root[data-a11y-text] .bento--projects { height: auto; }
+  :root[data-a11y-text] .agrid__glass,
+  :root[data-a11y-text] .cgrid__glass { grid-template-rows: auto; }
+  /* Project cards hold long scrolling reels, so their rows cannot be
+     content-sized (a reel would set the height). They get a fixed, taller
+     row instead - enough for the zoomed head and a window of the reel. */
+  :root[data-a11y-text='lg'] .bento--projects { grid-template-rows: repeat(2, 400px); }
+  :root[data-a11y-text='xl'] .bento--projects { grid-template-rows: repeat(2, 430px); }
+
+  /* The photo no longer has a definite row to fill, so it is pinned to the
+     frame the copy column sets, with a floor so it never collapses. */
+  :root[data-a11y-text] .agrid__portrait { min-height: 420px; }
+  :root[data-a11y-text] .agrid__portrait img { position: absolute; inset: 0; }
+}
+
 /* High contrast: the muted grey climbs to near-ink and hairlines darken. */
 :root[data-a11y-contrast='true'] {
   --muted: #2A3550;
@@ -247,4 +282,32 @@
 :root[data-a11y-links='true'] .shell__panel a {
   text-decoration: underline;
   text-underline-offset: 0.18em;
+}
+
+@media (min-width: 1100px) {
+  /* Larger text makes the rail taller than a laptop screen, and the button,
+     which is fixed in the rail's bottom corner, then sat on top of the nav
+     links. With larger text on it moves to the free bottom-right corner. */
+  :root[data-a11y-text] .a11y {
+    left: auto;
+    right: clamp(16px, 3vw, 28px);
+  }
+  :root[data-a11y-text] .a11y__panel {
+    left: auto;
+    right: 0;
+    transform-origin: bottom right;
+  }
+}
+
+/* Below a wide desktop the zoomed sheets ran out of width: the Projects
+   stack squeezed its titles to "Inv..." and the five service cards to a
+   few words a line. Fewer, wider columns there. */
+@media (min-width: 1100px) and (max-width: 1640px) {
+  :root[data-a11y-text] .bento--projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-auto-rows: 400px;
+  }
+  :root[data-a11y-text] .bento--projects .bento__card--wide { grid-column: 1 / -1; }
+  :root[data-a11y-text] .sgrid__services { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
