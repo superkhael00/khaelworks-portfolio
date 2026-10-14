@@ -5926,7 +5926,9 @@ img.about__stat-badge {
 .wfs__modal {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  /* Opened from inside the Projects pop-up (.pmodal, 8000), so it has to sit
+     above it - at 100 the full-size canvas opened behind the pop-up. */
+  z-index: 8500;
   display: flex;
   align-items: center;
   justify-content: center;
