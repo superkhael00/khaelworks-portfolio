@@ -56,6 +56,15 @@ const SAMPLES: Sample[] = [
     url: 'https://superkhael00.github.io/tala-glamping/',
     thumb: '/websites/tala-thumb.jpg',
   },
+  {
+    title: 'SALAKOT Coffee Roasters',
+    tagline: 'Coffee roastery & café website — design preview',
+    description:
+      'A rich, high-definition one-page website for a (fictional) Philippine coffee roastery. Visitors drag a 3D coffee tin in a warm light beam of drifting beans that follows the mouse, shuffle the week’s roasts, fly origin photos into focus, and hover café drinks that pop forward in 3D and burst with beans or ice. A subscription builder shows a live ₱ price per delivery. Front-end preview only; the subscription and wholesale forms are structured to connect to an automation workflow (n8n) in a future version.',
+    tags: ['HTML/CSS/JS', 'Responsive', '3D product (Three.js)', 'GSAP motion', 'HD imagery', 'Subscription builder'],
+    url: 'https://superkhael00.github.io/salakot-coffee/',
+    thumb: '/websites/salakot-thumb.jpg',
+  },
 ]
 
 const SLOTS = 3
