@@ -68,7 +68,7 @@ export const profile: Profile = {
   displayName: { line1: 'Automate the busywork.', line2: 'Keep control.' },
   hero: {
     body: 'I automate repetitive business processes, from simple tasks to complete systems, and build websites that connect to them. Using n8n, Make, Zapier, or GoHighLevel, I build reliable workflows with validation, approvals, error handling, and audit logs, so your team saves time and problems get caught early.',
-    portraitSrc: '/me-portrait-office.jpg',
+    portraitSrc: '/me-portrait-studio.jpg',
     portraitAlt: 'Michael John Mendoza',
   },
   socials: [
