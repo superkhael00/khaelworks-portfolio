@@ -65,6 +65,15 @@ const SAMPLES: Sample[] = [
     url: 'https://superkhael00.github.io/salakot-coffee/',
     thumb: '/websites/salakot-thumb.jpg',
   },
+  {
+    title: 'Evergreen Home Cleaning',
+    tagline: 'Home & office cleaning website — design preview',
+    description:
+      'A clean, five-page website for a (fictional) residential and office cleaning company. Visitors compare a room before and after with a drag-or-keyboard slider, hover gallery photos that tilt in 3D, and request a free quote through a validated form with clear, accessible error messages. Front-end preview only; the quote form is structured to connect to an automation workflow (n8n) in a future version.',
+    tags: ['HTML/CSS/JS', 'Responsive', 'Before/after slider', '3D tilt gallery', 'Quote form validation', 'Accessible'],
+    url: '/samples/evergreen/',
+    thumb: '/websites/evergreen-thumb.jpg',
+  },
 ]
 
 const SLOTS = 3
